@@ -3,5 +3,6 @@
 ## Kunitski Dzmitry
 ### Week 1
 * Topic: Introductie (Firebase), FriendlyChat maken.
+* Referentie: http://firebase.google.com/
 * Duur: 4 uur
 
