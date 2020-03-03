@@ -1,151 +1,152 @@
 <!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
 <html>
 
 <head>
-  <meta charset="utf-8">
-  <!--
-  Customize this policy to fit your own app's needs. For more guidance, see:
-      https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
-  Some notes:
-    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
-    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
-    * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
-      * Enable inline JS: add 'unsafe-inline' to default-src
-  -->
+    <meta charset="utf-8">
+    <!--
+        Customize this policy to fit your own app's needs. For more guidance, see:
+            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+        Some notes:
+            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+                * Enable inline JS: add 'unsafe-inline' to default-src
+        -->
 
-  <meta http-equiv="Content-Security-Policy"
-    content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap: content:">
-  <meta name="viewport"
-    content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap: content:">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
 
-  <meta name="theme-color" content="#007aff">
-  <meta name="format-detection" content="telephone=no">
-  <meta name="msapplication-tap-highlight" content="no">
-  <title>Anwin</title>
+    <meta name="theme-color" content="#007aff">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <title>Anwin</title>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/css/swiper.css">
+    <link rel="stylesheet" href="https://unpkg.com/swiper/css/swiper.min.css">
 
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css"
+        integrity="sha384-G0fIWCsCzJIMAVNQPfjH08cyYaUtMwjJwqiRKxxE/rx96Uroj1BtIQ6MLJuheaO9" crossorigin="anonymous">
 
-  <link rel="stylesheet" href="https://unpkg.com/swiper/css/swiper.css">
-  <link rel="stylesheet" href="https://unpkg.com/swiper/css/swiper.min.css">
-
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css"
-    integrity="sha384-G0fIWCsCzJIMAVNQPfjH08cyYaUtMwjJwqiRKxxE/rx96Uroj1BtIQ6MLJuheaO9" crossorigin="anonymous">
-
-  <link rel="apple-touch-icon" href="img/icon.png">
-  <link rel="icon" href="img/icon.png">
-  <link rel="stylesheet" href="framework7/css/framework7.bundle.min.css">
-  <link rel="stylesheet" href="css/icons.css">
-  <link rel="stylesheet" href="css/app.css">
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="apple-touch-icon" href="img/icon.png">
+    <link rel="icon" href="img/icon.png">
+    <link rel="stylesheet" href="framework7/css/framework7.bundle.min.css">
+    <link rel="stylesheet" href="css/icons.css">
+    <link rel="stylesheet" href="css/app.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 
 <body>
-  <style>
-    .fa-check-circle {
-      color: greenyellow;
-    }
+    <style>
+        .fa-check-circle {
+            color: greenyellow;
+        }
 
-    .fa-exclamation-circle {
-      color: red;
-    }
+        .fa-exclamation-circle {
+            color: red;
+        }
 
-    .fa-id-badge {
-      font-size: x-large;
-    }
+        .fa-id-badge {
+            font-size: x-large;
+        }
 
-    img.demo-lazy {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
+        img.demo-lazy {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
 
-    div.demo-lazy {
-      background: #aaa;
-      background-size: cover;
-      height: 60vw;
-    }
-  </style>
-  <div id="app" class="theme-dark">
+        div.demo-lazy {
+            background: #aaa;
+            background-size: cover;
+            height: 60vw;
+        }
+    </style>
+    <div id="app" class="theme-dark">
 
 
-    <!-- Your main view, should have "view-main" class -->
-    <div class="view view-main view-init safe-areas">
-      <div class="page" data-name="home">
-        <div class="fab fab-extended fab-center-bottom color-green">
-          <a href="/login-screen/">
-            <span style="font-size: 50px;">
-              <i class="fas fa-power-off"></i>
-            </span>
+        <!-- Your main view, should have "view-main" class -->
+        <div class="view view-main view-init safe-areas">
+            <div class="page" data-name="home">
+                <!--<div class="fab fab-extended fab-center-bottom color-green">
+              <a href="#" data-popup=".popup-login" class="panel-close popup-open">
+                <span style="font-size: 50px;">
+                  <i class="fas fa-power-off"></i>
+                </span>
+    
+              </a>
+            </div>-->
+                <div class="fab fab-extended fab-center-bottom color-green">
+                    <a href="/inloggenmedewerker/">
+                        <span style="font-size: 50px;">
+                            <i class="fas fa-power-off"></i>
+                        </span>
 
-          </a>
+                    </a>
+                </div>
+
+                <div class="page-content">
+                    <div class="block-title block-title-medium">Welkom in Anwin</div>
+                    <div class="block block-strong">
+                        <div id="firebaseui-auth-container"></div>
+
+
+                    </div>
+
+
+
+                </div>
+
+
+            </div>
         </div>
 
-        <div class="page-content">
-          <div class="block-title block-title-medium">Welkom in Anwin</div>
-          <p> <img style="border-radius: 50%" data-src="./img/cordova-splash-screen.png" width="200" height="200"
-              class="lazy lazy-fade-in demo-lazy" /></p>
-
-
-          <div class="block block-strong">
-            <div id="firebaseui-auth-container"></div>
-            
-          </div>
-
-
-
-        </div>
-
-      </div>
     </div>
+    <script src="framework7/js/framework7.bundle.min.js"></script>
+    <script src="js/cordova-app.js"></script>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
 
-  </div>
 
-  <!-- CORDOVA_PLACEHOLDER_DONT_REMOVE -->
-  <!-- Framework7 library -->
-  <script src="framework7/js/framework7.bundle.min.js"></script>
-  <!-- Cordova APIs -->
-  <script src="js/cordova-app.js"></script>
+    <!-- Cordova APIs -->
 
-  <!-- The core Firebase JS SDK is always required and must be listed first -->
-  <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-app.js"></script>
 
-  <!-- TODO: Add SDKs for Firebase products that you want to use
-     https://firebase.google.com/docs/web/setup#available-libraries -->
-  <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-analytics.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-auth.js"></script>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-app.js"></script>
 
-  <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
-  <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
- 
-  <script>
-    // Your web app's Firebase configuration
-    var firebaseConfig = {
-      apiKey: "AIzaSyD9S37G8dNCnZWYe7eAD4R3MaFXq9B2ggY",
-      authDomain: "anwin-fa985.firebaseapp.com",
-      databaseURL: "https://anwin-fa985.firebaseio.com",
-      projectId: "anwin-fa985",
-      storageBucket: "anwin-fa985.appspot.com",
-      messagingSenderId: "326563094597",
-      appId: "1:326563094597:web:b32a9fbe42cbb78e05832c",
-      measurementId: "G-Y1X3EJGMDF"
-    };
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    firebase.analytics();
-    var ui = new firebaseui.auth.AuthUI(firebase.auth());
-    ui.start('#firebaseui-auth-container', {
-      signInOptions: [
-        firebase.auth.EmailAuthProvider.PROVIDER_ID
-      ],
-      // Other config options...
-    });
-  </script>
-  
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+       https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-auth.js"></script>
 
-  <!-- App scripts -->
-  <script src="js/app.js"></script>
+    <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
 
+
+
+    <!-- App scripts -->
+
+
+    <script src="js/app.js"></script>
 </body>
 
 </html>
