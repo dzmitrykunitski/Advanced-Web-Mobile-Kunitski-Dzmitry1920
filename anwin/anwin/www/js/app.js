@@ -89,7 +89,7 @@ var app = new Framework7({
       },
       on: {
         pageInit: function (event, page) {
-
+          loadMedewerkersGgegevens();
           afsluitenSessie();
 
         },
@@ -417,7 +417,7 @@ function getRegistApi() {
     // Create user with email and pass.
     // [START createwithemail]
     firebase.auth().createUserWithEmailAndPassword(email, wachtwoord).then(function () {
-      $$('#fotoLabel').css('display', 'block');
+      //$$('#fotoLabel').css('display', 'block');
       $$('#FormLabelRegistreren').css('display', 'block');
       $$('#FormLabelVerder').hide();
 
@@ -438,7 +438,25 @@ function getRegistApi() {
       // [END_EXCLUDE]
     });
   });
+  $$('#btnVerderFoto').on('click', function () {
+    $$('#fotoLabel').css('display', 'block');
+    $$('#FormLabelRegistreren').hide();
+    $$('#labelRegistreren').css('display', 'block');
+    var user = firebase.auth().currentUser;
+    user.updateProfile({
+      displayName: document.getElementById('naamVoornaam').value,
+
+    }).then(function () {
+
+    }).catch(function (error) {
+      app.dialog.alert(error);
+    });
+
+
+  });
+
   $$('#btnRegistreren').on('click', function () {
+
     var storage = firebase.storage();
     // Create a storage reference from our storage service
     var storageRef = storage.ref();
@@ -455,41 +473,34 @@ function getRegistApi() {
     }).catch(function (error) {
       app.dialog.alert(error);
     });
-
-    var recentUrl;
-    fileRef.getDownloadURL().then(function (url) {
-      recentUrl = String(url);
-      urlRef += recentUrl;
-
-
-    }).catch(function (error) { });
-    app.dialog.confirm('Wil je verder gaan?', function () {
-      var user = firebase.auth().currentUser;
-      user.updateProfile({
-        displayName: document.getElementById('naamVoornaam').value,
-        photoURL: urlRef
+    app.dialog.confirm('Wil je doorgaan?', function () {
+      fileRef.getDownloadURL().then(function (url) {
+        var user = firebase.auth().currentUser;
+        user.updateProfile({
+          photoURL: url
 
 
-      }).then(function () {
-        firebase.firestore().collection("medewerker").doc(user.uid).set({
-          name: user.displayName,
-          email: user.email,
-          photoUrl: user.photoURL,
-          uid: user.uid
-        })
-          .then(function () {
-            console.log("Document successfully written!");
-            notificationLoginEnRegistrerenMedewerker.open();
+        }).then(function () {
+          firebase.firestore().collection("medewerker").doc(user.uid).set({
+            name: user.displayName,
+            email: user.email,
+            photoUrl: user.photoURL,
+            uid: user.uid
           })
-          .catch(function (error) {
-            app.dialog.alert(error);
-          });
-      }).catch(function (error) {
-        app.dialog.alert(error);
-      });
+            .then(function () {
+              console.log("Document successfully written!");
+              notificationLoginEnRegistrerenMedewerker.open();
+            })
+            .catch(function (error) {
+              app.dialog.alert(error);
+            });
+        }).catch(function (error) {
+          app.dialog.alert(error);
+        });
 
+
+      }).catch(function (error) { });
     });
-
 
   });
 
@@ -1178,7 +1189,19 @@ function afsluitenSessie() {
   });
 }
 
+function loadMedewerkersGgegevens() {
+  var user = firebase.auth().currentUser;
+  let line = "";
+  if (user != null) {
+    user.providerData.forEach(function (profile) {
 
+
+      line += '<div class="login-screen-title">Welkom, ' + profile.displayName + '</div>';
+
+    });
+    $$('.page-content').html(line);
+  }
+}
 
 var firebaseConfig = {
   apiKey: "AIzaSyD9S37G8dNCnZWYe7eAD4R3MaFXq9B2ggY",
