@@ -1,13 +1,13 @@
 /**
- * Framework7 5.3.2
+ * Framework7 5.4.5
  * Full featured mobile HTML framework for building iOS & Android apps
- * http://framework7.io/
+ * https://framework7.io/
  *
  * Copyright 2014-2020 Vladimir Kharlampidi
  *
  * Released under the MIT License
  *
- * Released on: January 18, 2020
+ * Released on: February 21, 2020
  */
 
 (function (global, factory) {
@@ -2774,7 +2774,7 @@
         return !!((win.navigator.maxTouchPoints > 0) || ('ontouchstart' in win) || (win.DocumentTouch && doc instanceof win.DocumentTouch));
       }()),
 
-      pointerEvents: !!win.PointerEvent && ('maxTouchPoints' in win.navigator) && win.navigator.maxTouchPoints > 0,
+      pointerEvents: !!win.PointerEvent,
 
       observer: (function checkObserver() {
         return ('MutationObserver' in win || 'WebkitMutationObserver' in win);
@@ -3511,12 +3511,14 @@
       };
 
       // Init
-      if (Device.cordova && app.params.initOnDeviceReady) {
-        $(doc).on('deviceready', function () {
+      if (app.params.init) {
+        if (Device.cordova && app.params.initOnDeviceReady) {
+          $(doc).on('deviceready', function () {
+            app.init();
+          });
+        } else {
           app.init();
-        });
-      } else {
-        app.init();
+        }
       }
 
       // Return app instance
@@ -3915,6 +3917,7 @@
     // Additional headers
     if (options.headers) {
       Object.keys(options.headers).forEach(function (headerName) {
+        if (typeof options.headers[headerName] === 'undefined') { return; }
         xhr.setRequestHeader(headerName, options.headers[headerName]);
       });
     }
@@ -3933,11 +3936,9 @@
       Utils.extend(xhr, options.xhrFields);
     }
 
-    var xhrTimeout;
 
     // Handle XHR
     xhr.onload = function onload() {
-      if (xhrTimeout) { clearTimeout(xhrTimeout); }
       if ((xhr.status >= 200 && xhr.status < 300) || xhr.status === 0) {
         var responseData;
         if (options.dataType === 'json') {
@@ -3967,21 +3968,17 @@
     };
 
     xhr.onerror = function onerror() {
-      if (xhrTimeout) { clearTimeout(xhrTimeout); }
       fireCallback('error', xhr, xhr.status, xhr.status);
       fireCallback('complete', xhr, 'error');
     };
 
     // Timeout
     if (options.timeout > 0) {
-      xhr.onabort = function onabort() {
-        if (xhrTimeout) { clearTimeout(xhrTimeout); }
-      };
-      xhrTimeout = setTimeout(function () {
-        xhr.abort();
+      xhr.timeout = options.timeout;
+      xhr.ontimeout = function () {
         fireCallback('error', xhr, 'timeout', 'timeout');
         fireCallback('complete', xhr, 'timeout');
-      }, options.timeout);
+      };
     }
 
     // Ajax start callback
@@ -7484,7 +7481,7 @@
         router.emit('pageMasterUnstack', $newPage[0]);
         if (dynamicNavbar) {
           $(app.navbar.getElByPage($newPage)).removeClass('navbar-master-stacked');
-          router.emi('navbarMasterUnstack', app.navbar.getElByPage($newPage));
+          router.emit('navbarMasterUnstack', app.navbar.getElByPage($newPage));
         }
       }
       // Page init and before init events
@@ -13656,12 +13653,25 @@
       app.root.append(("\n      <div class=\"preloader-backdrop\"></div>\n      <div class=\"preloader-modal\">\n        <div class=\"preloader color-" + color + "\">" + preloaderInner + "</div>\n      </div>\n    "));
       Preloader.visible = true;
     },
+    showIn: function showIn(el, color) {
+      if ( color === void 0 ) color = 'white';
+
+      var app = this;
+      var preloaderInner = Utils[((app.theme) + "PreloaderContent")] || '';
+      $(el || 'html').addClass('with-modal-preloader');
+      $(el || app.root).append(("\n      <div class=\"preloader-backdrop\"></div>\n      <div class=\"preloader-modal\">\n        <div class=\"preloader color-" + color + "\">" + preloaderInner + "</div>\n      </div>\n    "));
+    },
     hide: function hide() {
       var app = this;
       if (!Preloader.visible) { return; }
       $('html').removeClass('with-modal-preloader');
       app.root.find('.preloader-backdrop, .preloader-modal').remove();
       Preloader.visible = false;
+    },
+    hideIn: function hideIn(el) {
+      var app = this;
+      $(el || 'html').removeClass('with-modal-preloader');
+      $(el || app.root).find('.preloader-backdrop, .preloader-modal').remove();
     },
   };
   var Preloader$1 = {
@@ -13673,6 +13683,8 @@
           init: Preloader.init.bind(app),
           show: Preloader.show.bind(app),
           hide: Preloader.hide.bind(app),
+          showIn: Preloader.showIn.bind(app),
+          hideIn: Preloader.hideIn.bind(app),
         },
       });
     },
@@ -17466,7 +17478,7 @@
         .transform(("translate3d(" + (app.rtl ? (cardLeftOffset + translateX) : (-cardLeftOffset - translateX)) + "px, 0px, 0) scale(" + (1 / scaleX) + ", " + (1 / scaleY) + ")"));
 
       $cardEl
-        .transform(("translate3d(" + translateX + "px, " + translateY + "px, 0) scale(" + scaleX + ", " + scaleY + ")"));
+        .transform(("translate3d(" + (app.rtl ? -translateX : translateX) + "px, " + translateY + "px, 0) scale(" + scaleX + ", " + scaleY + ")"));
       if (cardParams.animate) {
         $cardEl.transitionEnd(function () {
           transitionEnd();
@@ -17520,7 +17532,7 @@
         translateX = (cardRightOffset - cardLeftOffset) / 2;
         translateY = (cardBottomOffset - cardTopOffset) / 2;
 
-        $cardEl.transform(("translate3d(" + translateX + "px, " + translateY + "px, 0) scale(" + scaleX + ", " + scaleY + ")"));
+        $cardEl.transform(("translate3d(" + (app.rtl ? -translateX : translateX) + "px, " + translateY + "px, 0) scale(" + scaleX + ", " + scaleY + ")"));
         $cardContentEl
           .css({
             width: (maxWidth + "px"),
@@ -17540,10 +17552,20 @@
       var progress;
       var isV;
       var isH;
+      var $cardScrollableEl;
       function onTouchStart(e) {
         if (!$(e.target).closest($cardEl).length) { return; }
         if (!$cardEl.hasClass('card-opened')) { return; }
-        cardScrollTop = $cardContentEl.scrollTop();
+        $cardScrollableEl = $cardEl.find(cardParams.scrollableEl);
+
+        if ($cardScrollableEl[0]
+          && $cardScrollableEl[0] !== $cardContentEl[0]
+          && !$cardScrollableEl[0].contains(e.target)
+        ) {
+          cardScrollTop = 0;
+        } else {
+          cardScrollTop = $cardScrollableEl.scrollTop();
+        }
         isTouched = true;
         touchStartX = e.targetTouches[0].pageX;
         touchStartY = e.targetTouches[0].pageY;
@@ -17578,9 +17600,9 @@
         isMoved = true;
         progress = isV ? Math.max((touchEndY - touchStartY) / 150, 0) : Math.max((touchEndX - touchStartX) / (cardWidth / 2), 0);
         if ((progress > 0 && isV) || isH) {
-          if (isV && app.device.ios) {
-            $cardContentEl.css('-webkit-overflow-scrolling', 'auto');
-            $cardContentEl.scrollTop(0);
+          if (isV && app.device.ios && $cardScrollableEl[0] === $cardContentEl[0]) {
+            $cardScrollableEl.css('-webkit-overflow-scrolling', 'auto');
+            $cardScrollableEl.scrollTop(0);
           }
           e.preventDefault();
         }
@@ -17591,7 +17613,7 @@
           isMoved = false;
           app.card.close($cardEl);
         } else {
-          $cardEl.transform(("translate3d(" + translateX + "px, " + translateY + "px, 0) scale(" + (scaleX * (1 - progress * 0.2)) + ", " + (scaleY * (1 - progress * 0.2)) + ")"));
+          $cardEl.transform(("translate3d(" + (app.rtl ? -translateX : translateX) + "px, " + translateY + "px, 0) scale(" + (scaleX * (1 - progress * 0.2)) + ", " + (scaleY * (1 - progress * 0.2)) + ")"));
         }
       }
       function onTouchEnd() {
@@ -17599,14 +17621,14 @@
         isTouched = false;
         isMoved = false;
         if (app.device.ios) {
-          $cardContentEl.css('-webkit-overflow-scrolling', '');
+          $cardScrollableEl.css('-webkit-overflow-scrolling', '');
         }
         if (progress >= 0.8) {
           app.card.close($cardEl);
         } else {
           $cardEl
             .addClass('card-transitioning')
-            .transform(("translate3d(" + translateX + "px, " + translateY + "px, 0) scale(" + scaleX + ", " + scaleY + ")"));
+            .transform(("translate3d(" + (app.rtl ? -translateX : translateX) + "px, " + translateY + "px, 0) scale(" + scaleX + ", " + scaleY + ")"));
         }
       }
 
@@ -17642,6 +17664,7 @@
       if (!$pageEl.length) { return; }
 
       var cardParams = Object.assign({ animate: animate }, app.params.card, $cardEl.dataset());
+      var $cardScrollableEl = $cardEl.find(cardParams.scrollableEl);
 
       var $navbarEl;
       var $toolbarEl;
@@ -17725,6 +17748,9 @@
       $cardContentEl
         .transform('')
         .scrollTop(0, animate ? 300 : 0);
+      if ($cardScrollableEl.length && $cardScrollableEl[0] !== $cardContentEl[0]) {
+        $cardScrollableEl.scrollTop(0, animate ? 300 : 0);
+      }
       if (animate) {
         $cardContentEl.transitionEnd(function () {
           transitionEnd();
@@ -17759,6 +17785,7 @@
         hideNavbarOnOpen: true,
         hideStatusbarOnOpen: true,
         hideToolbarOnOpen: true,
+        scrollableEl: '.card-content',
         swipeToClose: true,
         closeByBackdropClick: true,
         backdrop: true,
@@ -19932,9 +19959,6 @@
         }
       }
 
-      // View
-      var view;
-
       // Url
       var url = params.url;
       if (!url) {
@@ -19958,7 +19982,6 @@
         multiple: multiple,
         inputType: inputType,
         id: id,
-        view: view,
         inputName: (inputType + "-" + id),
         selectName: $selectEl.attr('name'),
         maxLength: $selectEl.attr('maxlength') || params.maxLength,
@@ -20047,6 +20070,8 @@
     SmartSelect.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     SmartSelect.prototype.constructor = SmartSelect;
 
+    var prototypeAccessors = { view: { configurable: true } };
+
     SmartSelect.prototype.setValue = function setValue (value) {
       var ss = this;
       var newValue = value;
@@ -20107,16 +20132,20 @@
       return ss.$selectEl.val();
     };
 
-    SmartSelect.prototype.getView = function getView () {
-      var ss = this;
-      var view = ss.view || ss.params.view;
-      if (!view) {
-        view = ss.$el.parents('.view').length && ss.$el.parents('.view')[0].f7View;
+    prototypeAccessors.view.get = function () {
+      var ref = this;
+      var params = ref.params;
+      var $el = ref.$el;
+      var view;
+      if (params.view) {
+        view = params.view;
       }
       if (!view) {
+        view = $el.parents('.view').length && $el.parents('.view')[0].f7View;
+      }
+      if (!view && params.openIn === 'page') {
         throw Error('Smart Select requires initialized View');
       }
-      ss.view = view;
       return view;
     };
 
@@ -20449,9 +20478,8 @@
       if (ss.opened) { return ss; }
       ss.getItemsData();
       var pageHtml = ss.renderPage(ss.items);
-      var view = ss.getView();
 
-      view.router.navigate({
+      ss.view.router.navigate({
         url: ss.url,
         route: {
           content: pageHtml,
@@ -20501,9 +20529,8 @@
         },
       };
 
-      if (ss.params.routableModals) {
-        var view = ss.getView();
-        view.router.navigate({
+      if (ss.params.routableModals && ss.view) {
+        ss.view.router.navigate({
           url: ss.url,
           route: {
             path: ss.url,
@@ -20545,9 +20572,8 @@
         },
       };
 
-      if (ss.params.routableModals) {
-        var view = ss.getView();
-        view.router.navigate({
+      if (ss.params.routableModals && ss.view) {
+        ss.view.router.navigate({
           url: ss.url,
           route: {
             path: ss.url,
@@ -20583,9 +20609,8 @@
           },
         },
       };
-      if (ss.params.routableModals) {
-        var view = ss.getView();
-        view.router.navigate({
+      if (ss.params.routableModals && ss.view) {
+        ss.view.router.navigate({
           url: ss.url,
           route: {
             path: ss.url,
@@ -20621,9 +20646,8 @@
     SmartSelect.prototype.close = function close () {
       var ss = this;
       if (!ss.opened) { return ss; }
-      if (ss.params.routableModals || ss.openedIn === 'page') {
-        var view = ss.getView();
-        view.router.back();
+      if ((ss.params.routableModals && ss.view) || ss.openedIn === 'page') {
+        ss.view.router.back();
       } else {
         ss.modal.once('modalClosed', function () {
           Utils.nextTick(function () {
@@ -20652,6 +20676,8 @@
       Utils.deleteProps(ss);
       ss.destroyed = true;
     };
+
+    Object.defineProperties( SmartSelect.prototype, prototypeAccessors );
 
     return SmartSelect;
   }(Framework7Class));
@@ -21003,12 +21029,6 @@
         $inputEl = $(calendar.params.inputEl);
       }
 
-      var view;
-      if ($inputEl) {
-        view = $inputEl.parents('.view').length && $inputEl.parents('.view')[0].f7View;
-      }
-      if (!view) { view = app.views.main; }
-
       var isHorizontal = calendar.params.direction === 'horizontal';
 
       var inverter = 1;
@@ -21028,7 +21048,6 @@
         url: calendar.params.url,
         isHorizontal: isHorizontal,
         inverter: inverter,
-        view: view,
         animating: false,
         hasTimePicker: calendar.params.timePicker && !calendar.params.rangePicker && !calendar.params.multiple,
       });
@@ -21386,6 +21405,23 @@
     if ( Framework7Class ) Calendar.__proto__ = Framework7Class;
     Calendar.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Calendar.prototype.constructor = Calendar;
+
+    var prototypeAccessors = { view: { configurable: true } };
+
+    prototypeAccessors.view.get = function () {
+      var ref = this;
+      var $inputEl = ref.$inputEl;
+      var app = ref.app;
+      var params = ref.params;
+      var view;
+      if (params.view) {
+        view = params.view;
+      } else if ($inputEl) {
+        view = $inputEl.parents('.view').length && $inputEl.parents('.view')[0].f7View;
+      }
+      if (!view) { view = app.views.main; }
+      return view;
+    };
 
     Calendar.prototype.getIntlNames = function getIntlNames () {
       var calendar = this;
@@ -22646,7 +22682,7 @@
         modalParams.push = params.sheetPush;
         modalParams.swipeToClose = params.sheetSwipeToClose;
       }
-      if (params.routableModals) {
+      if (params.routableModals && calendar.view) {
         calendar.view.router.navigate({
           url: calendar.url,
           route: ( obj = {
@@ -22669,7 +22705,7 @@
         calendar.onClosed();
         return;
       }
-      if (calendar.params.routableModals) {
+      if (calendar.params.routableModals && calendar.view) {
         calendar.view.router.back();
       } else {
         calendar.modal.close();
@@ -22727,6 +22763,8 @@
       Utils.deleteProps(calendar);
       calendar.destroyed = true;
     };
+
+    Object.defineProperties( Calendar.prototype, prototypeAccessors );
 
     return Calendar;
   }(Framework7Class));
@@ -23207,11 +23245,14 @@
         $inputEl = $(picker.params.inputEl);
       }
 
-      var view;
-      if ($inputEl) {
-        view = $inputEl.parents('.view').length && $inputEl.parents('.view')[0].f7View;
+
+      var $scrollToEl = picker.params.scrollToInput ? $inputEl : undefined;
+      if (picker.params.scrollToEl) {
+        var scrollToEl = $(picker.params.scrollToEl);
+        if (scrollToEl.length > 0) {
+          $scrollToEl = scrollToEl;
+        }
       }
-      if (!view) { view = app.views.main; }
 
       Utils.extend(picker, {
         app: app,
@@ -23222,10 +23263,10 @@
         cols: [],
         $inputEl: $inputEl,
         inputEl: $inputEl && $inputEl[0],
+        $scrollToEl: $scrollToEl,
         initialized: false,
         opened: false,
         url: picker.params.url,
-        view: view,
       });
 
       function onResize() {
@@ -23288,6 +23329,23 @@
     if ( Framework7Class ) Picker.__proto__ = Framework7Class;
     Picker.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Picker.prototype.constructor = Picker;
+
+    var prototypeAccessors = { view: { configurable: true } };
+
+    prototypeAccessors.view.get = function () {
+      var ref = this;
+      var app = ref.app;
+      var params = ref.params;
+      var $inputEl = ref.$inputEl;
+      var view;
+      if (params.view) {
+        view = params.view;
+      } else if ($inputEl) {
+        view = $inputEl.parents('.view').length && $inputEl.parents('.view')[0].f7View;
+      }
+      if (!view) { view = app.views.main; }
+      return view;
+    };
 
     Picker.prototype.initInput = function initInput () {
       var picker = this;
@@ -23600,6 +23658,7 @@
       var opened = picker.opened;
       var inline = picker.inline;
       var $inputEl = picker.$inputEl;
+      var $scrollToEl = picker.$scrollToEl;
       var params = picker.params;
       if (opened) { return; }
       if (picker.cols.length === 0 && params.cols.length) {
@@ -23619,7 +23678,7 @@
       var modalType = isPopover ? 'popover' : 'sheet';
       var modalParams = {
         targetEl: $inputEl,
-        scrollToEl: params.scrollToInput ? $inputEl : undefined,
+        scrollToEl: $scrollToEl,
         content: picker.render(),
         backdrop: typeof params.backdrop !== 'undefined' ? params.backdrop : isPopover,
         on: {
@@ -23639,7 +23698,7 @@
         modalParams.push = params.sheetPush;
         modalParams.swipeToClose = params.sheetSwipeToClose;
       }
-      if (params.routableModals) {
+      if (params.routableModals && picker.view) {
         picker.view.router.navigate({
           url: picker.url,
           route: ( obj = {
@@ -23662,7 +23721,7 @@
         picker.onClosed();
         return;
       }
-      if (picker.params.routableModals) {
+      if (picker.params.routableModals && picker.view) {
         picker.view.router.back();
       } else {
         picker.modal.close();
@@ -23716,6 +23775,8 @@
       picker.destroyed = true;
     };
 
+    Object.defineProperties( Picker.prototype, prototypeAccessors );
+
     return Picker;
   }(Framework7Class));
 
@@ -23764,6 +23825,7 @@
         inputReadOnly: true,
         closeByOutsideClick: true,
         scrollToInput: true,
+        scrollToEl: undefined,
         toolbar: true,
         toolbarCloseText: 'Done',
         cssClass: null,
@@ -24588,12 +24650,12 @@
 
       var bg = $imageEl.attr('data-background');
       var src = bg || $imageEl.attr('data-src');
-      if (!src) { return; }
+
       function onLoad() {
         $imageEl.removeClass('lazy').addClass('lazy-loaded');
         if (bg) {
           $imageEl.css('background-image', ("url(" + src + ")"));
-        } else {
+        } else if (src) {
           $imageEl.attr('src', src);
         }
         if (callback) { callback(imageEl); }
@@ -24601,6 +24663,12 @@
         app.emit('lazyLoaded', $imageEl[0]);
       }
 
+      if (!src) {
+        $imageEl.trigger('lazy:load');
+        app.emit('lazyLoad', $imageEl[0]);
+        onLoad();
+        return;
+      }
       function onError() {
         $imageEl.removeClass('lazy').addClass('lazy-loaded');
         if (bg) {
@@ -25071,6 +25139,7 @@
       } else {
         $fabEl.addClass('fab-opened');
       }
+      $fabEl.siblings('.fab-backdrop').addClass('backdrop-in');
       $fabEl.trigger('fab:open');
     },
     close: function close(fabEl) {
@@ -25088,6 +25157,7 @@
       } else {
         $fabEl.removeClass('fab-opened');
       }
+      $fabEl.siblings('.fab-backdrop').removeClass('backdrop-in');
       $fabEl.trigger('fab:close');
     },
     toggle: function toggle(fabEl) {
@@ -25129,6 +25199,10 @@
 
         var app = this;
         app.fab.close(data.fab);
+      },
+      '.fab-backdrop': function close() {
+        var app = this;
+        app.fab.close();
       },
     },
   };
@@ -27744,7 +27818,7 @@
 
     var skip = Math.min(swiper.params.slidesPerGroupSkip, slideIndex);
     var snapIndex = skip + Math.floor((slideIndex - skip) / swiper.params.slidesPerGroup);
-    if (snapIndex >= slidesGrid.length) { snapIndex = slidesGrid.length - 1; }
+    if (snapIndex >= snapGrid.length) { snapIndex = snapGrid.length - 1; }
 
     if ((activeIndex || params.initialSlide || 0) === (previousIndex || 0) && runCallbacks) {
       swiper.emit('beforeSlideChangeStart');
@@ -29637,7 +29711,7 @@
           startTranslate: undefined,
           allowThresholdMove: undefined,
           // Form elements to match
-          formElements: 'input, select, option, textarea, button, video',
+          formElements: 'input, select, option, textarea, button, video, label',
           // Last click time
           lastClickTime: Utils.now(),
           clickTimeout: undefined,
@@ -34116,7 +34190,6 @@
         opened: false,
         activeIndex: pb.params.swiper.initialSlide,
         url: pb.params.url,
-        view: pb.params.view || app.views.main,
         swipeToClose: {
           allow: true,
           isTouched: false,
@@ -34139,6 +34212,15 @@
     if ( Framework7Class ) PhotoBrowser.__proto__ = Framework7Class;
     PhotoBrowser.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     PhotoBrowser.prototype.constructor = PhotoBrowser;
+
+    var prototypeAccessors = { view: { configurable: true } };
+
+    prototypeAccessors.view.get = function () {
+      var ref = this;
+      var params = ref.params;
+      var app = ref.app;
+      return params.view || app.views.main;
+    };
 
     PhotoBrowser.prototype.onSlideChange = function onSlideChange (swiper) {
       var pb = this;
@@ -34588,7 +34670,7 @@
         },
       };
 
-      if (pb.params.routableModals) {
+      if (pb.params.routableModals && pb.view) {
         pb.view.router.navigate({
           url: pb.url,
           route: {
@@ -34627,7 +34709,7 @@
         },
       };
 
-      if (pb.params.routableModals) {
+      if (pb.params.routableModals && pb.view) {
         pb.view.router.navigate({
           url: pb.url,
           route: {
@@ -34702,8 +34784,8 @@
     PhotoBrowser.prototype.close = function close () {
       var pb = this;
       if (!pb.opened) { return pb; }
-      if (pb.params.routableModals || pb.openedIn === 'page') {
-        if (pb.view) { pb.view.router.back(); }
+      if ((pb.params.routableModals && pb.view) || pb.openedIn === 'page') {
+        pb.view.router.back();
       } else {
         pb.modal.once('modalClosed', function () {
           Utils.nextTick(function () {
@@ -34731,6 +34813,8 @@
       pb.destroyed = true;
       pb = null;
     };
+
+    Object.defineProperties( PhotoBrowser.prototype, prototypeAccessors );
 
     return PhotoBrowser;
   }(Framework7Class));
@@ -35083,15 +35167,6 @@
         if ($inputEl.length) { $inputEl[0].f7Autocomplete = ac; }
       }
 
-      var view;
-      if (ac.params.view) {
-        view = ac.params.view;
-      } else if ($openerEl || $inputEl) {
-        var $el = $openerEl || $inputEl;
-        view = $el.closest('.view').length && $el.closest('.view')[0].f7View;
-      }
-      if (!view) { view = app.views.main; }
-
       var id = Utils.id();
 
       var url = params.url;
@@ -35111,7 +35186,6 @@
         $inputEl: $inputEl,
         inputEl: $inputEl && $inputEl[0],
         id: id,
-        view: view,
         url: url,
         value: ac.params.value || [],
         inputType: inputType,
@@ -35377,6 +35451,24 @@
     if ( Framework7Class ) Autocomplete.__proto__ = Framework7Class;
     Autocomplete.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     Autocomplete.prototype.constructor = Autocomplete;
+
+    var prototypeAccessors = { view: { configurable: true } };
+
+    prototypeAccessors.view.get = function () {
+      var ac = this;
+      var $openerEl = ac.$openerEl;
+      var $inputEl = ac.$inputEl;
+      var app = ac.app;
+      var view;
+      if (ac.params.view) {
+        view = ac.params.view;
+      } else if ($openerEl || $inputEl) {
+        var $el = $openerEl || $inputEl;
+        view = $el.closest('.view').length && $el.closest('.view')[0].f7View;
+      }
+      if (!view) { view = app.views.main; }
+      return view;
+    };
 
     Autocomplete.prototype.positionDropdown = function positionDropdown () {
       var obj;
@@ -35730,7 +35822,7 @@
         },
       };
 
-      if (ac.params.routableModals) {
+      if (ac.params.routableModals && ac.view) {
         ac.view.router.navigate({
           url: ac.url,
           route: {
@@ -35785,7 +35877,7 @@
       if (ac.params.openIn === 'dropdown') {
         ac.onClose();
         ac.onClosed();
-      } else if (ac.params.routableModals || ac.openedIn === 'page') {
+      } else if ((ac.params.routableModals && ac.view) || ac.openedIn === 'page') {
         ac.view.router.back({ animate: ac.params.animate });
       } else {
         ac.modal.once('modalClosed', function () {
@@ -35818,6 +35910,8 @@
       Utils.deleteProps(ac);
       ac.destroyed = true;
     };
+
+    Object.defineProperties( Autocomplete.prototype, prototypeAccessors );
 
     return Autocomplete;
   }(Framework7Class));
@@ -35956,6 +36050,17 @@
 
       var touchesStart = {};
       var isTouched;
+      function handleClick() {
+        if (tooltip.opened) { tooltip.hide(); }
+        else { tooltip.show(this); }
+      }
+      function handleClickOut(e) {
+        if (tooltip.opened && (
+          $(e.target).closest($targetEl).length
+          || $(e.target).closest(tooltip.$el).length
+        )) { return; }
+        tooltip.hide();
+      }
       function handleTouchStart(e) {
         if (isTouched) { return; }
         isTouched = true;
@@ -35995,6 +36100,11 @@
 
       tooltip.attachEvents = function attachEvents() {
         $el.on('transitionend', handleTransitionEnd);
+        if (tooltip.params.trigger === 'click') {
+          $targetEl.on('click', handleClick);
+          $('html').on('click', handleClickOut);
+          return;
+        }
         if (Support.touch) {
           var passive = Support.passiveListener ? { passive: true } : false;
           $targetEl.on(app.touchEvents.start, handleTouchStart, passive);
@@ -36007,6 +36117,11 @@
       };
       tooltip.detachEvents = function detachEvents() {
         $el.off('transitionend', handleTransitionEnd);
+        if (tooltip.params.trigger === 'click') {
+          $targetEl.off('click', handleClick);
+          $('html').off('click', handleClickOut);
+          return;
+        }
         if (Support.touch) {
           var passive = Support.passiveListener ? { passive: true } : false;
           $targetEl.off(app.touchEvents.start, handleTouchStart, passive);
@@ -36226,6 +36341,7 @@
         cssClass: null,
         render: null,
         offset: 0,
+        trigger: 'hover',
       },
     },
     on: {
@@ -37829,15 +37945,6 @@
         $targetEl = $(self.params.targetEl);
       }
 
-      var view;
-      if ($inputEl) {
-        view = $inputEl.parents('.view').length && $inputEl.parents('.view')[0].f7View;
-      }
-      if (!view && $targetEl) {
-        view = $targetEl.parents('.view').length && $targetEl.parents('.view')[0].f7View;
-      }
-      if (!view) { view = app.views.main; }
-
       Utils.extend(self, {
         app: app,
         $containerEl: $containerEl,
@@ -37850,7 +37957,6 @@
         initialized: false,
         opened: false,
         url: self.params.url,
-        view: view,
         modules: {
           'alpha-slider': moduleAlphaSlider,
           'current-color': moduleCurrentColor,
@@ -37929,6 +38035,30 @@
     if ( Framework7Class ) ColorPicker.__proto__ = Framework7Class;
     ColorPicker.prototype = Object.create( Framework7Class && Framework7Class.prototype );
     ColorPicker.prototype.constructor = ColorPicker;
+
+    var prototypeAccessors = { view: { configurable: true } };
+
+    prototypeAccessors.view.get = function () {
+      var ref = this;
+      var $inputEl = ref.$inputEl;
+      var $targetEl = ref.$targetEl;
+      var app = ref.app;
+      var params = ref.params;
+      var view;
+      if (params.view) {
+        view = params.view;
+      } else {
+        if ($inputEl) {
+          view = $inputEl.parents('.view').length && $inputEl.parents('.view')[0].f7View;
+        }
+        if (!view && $targetEl) {
+          view = $targetEl.parents('.view').length && $targetEl.parents('.view')[0].f7View;
+        }
+      }
+      if (!view) { view = app.views.main; }
+
+      return view;
+    };
 
     ColorPicker.prototype.attachEvents = function attachEvents () {
       var self = this;
@@ -38525,7 +38655,7 @@
           modalParams.push = params.sheetPush;
           modalParams.swipeToClose = params.sheetSwipeToClose;
         }
-        if (params.routableModals) {
+        if (params.routableModals && self.view) {
           self.view.router.navigate({
             url: self.url,
             route: ( obj = {
@@ -38549,7 +38679,7 @@
         self.onClosed();
         return;
       }
-      if (self.params.routableModals) {
+      if ((self.params.routableModals && self.view) || self.params.openIn === 'page') {
         self.view.router.back();
       } else {
         self.modal.close();
@@ -38609,6 +38739,8 @@
       Utils.deleteProps(self);
       self.destroyed = true;
     };
+
+    Object.defineProperties( ColorPicker.prototype, prototypeAccessors );
 
     return ColorPicker;
   }(Framework7Class));
@@ -38867,6 +38999,7 @@
       self.onInput = self.onInput.bind(self);
       self.onPaste = self.onPaste.bind(self);
       self.onSelectionChange = self.onSelectionChange.bind(self);
+      self.closeKeyboardToolbar = self.closeKeyboardToolbar.bind(self);
 
       // Handle Events
       self.attachEvents = function attachEvents() {
@@ -38875,6 +39008,7 @@
         }
         if (self.params.mode === 'keyboard-toolbar') {
           self.$keyboardToolbarEl.on('click', 'button', self.onButtonClick);
+          self.$el.parents('.page').on('page:beforeout', self.closeKeyboardToolbar);
         }
         if (self.params.mode === 'popover' && self.popover) {
           self.popover.$el.on('click', 'button', self.onButtonClick);
@@ -38891,6 +39025,7 @@
         }
         if (self.params.mode === 'keyboard-toolbar') {
           self.$keyboardToolbarEl.off('click', 'button', self.onButtonClick);
+          self.$el.parents('.page').off('page:beforeout', self.closeKeyboardToolbar);
         }
         if (self.params.mode === 'popover' && self.popover) {
           self.popover.$el.off('click', 'button', self.onButtonClick);
@@ -39271,6 +39406,9 @@
       self.$el.trigger('texteditor:beforedestroy');
       self.emit('local::beforeDestroy textEditorBeforeDestroy', self);
       self.detachEvents();
+      if (self.params.mode === 'keyboard-toolbar' && self.$keyboardToolbarEl) {
+        self.$keyboardToolbarEl.remove();
+      }
       if (self.popover) {
         self.popover.close(false);
         self.popover.destroy();
@@ -39621,15 +39759,15 @@
   };
 
   /**
-   * Framework7 5.3.2
+   * Framework7 5.4.5
    * Full featured mobile HTML framework for building iOS & Android apps
-   * http://framework7.io/
+   * https://framework7.io/
    *
    * Copyright 2014-2020 Vladimir Kharlampidi
    *
    * Released under the MIT License
    *
-   * Released on: January 18, 2020
+   * Released on: February 21, 2020
    */
 
   // Install Core Modules & Components

@@ -1,13 +1,13 @@
 /**
- * Framework7 5.3.2
+ * Framework7 5.4.5
  * Full featured mobile HTML framework for building iOS & Android apps
- * http://framework7.io/
+ * https://framework7.io/
  *
  * Copyright 2014-2020 Vladimir Kharlampidi
  *
  * Released under the MIT License
  *
- * Released on: January 18, 2020
+ * Released on: February 21, 2020
  */
 
 (function (global, factory) {
@@ -2774,7 +2774,7 @@
         return !!((win.navigator.maxTouchPoints > 0) || ('ontouchstart' in win) || (win.DocumentTouch && doc instanceof win.DocumentTouch));
       }()),
 
-      pointerEvents: !!win.PointerEvent && ('maxTouchPoints' in win.navigator) && win.navigator.maxTouchPoints > 0,
+      pointerEvents: !!win.PointerEvent,
 
       observer: (function checkObserver() {
         return ('MutationObserver' in win || 'WebkitMutationObserver' in win);
@@ -3511,12 +3511,14 @@
       };
 
       // Init
-      if (Device.cordova && app.params.initOnDeviceReady) {
-        $(doc).on('deviceready', function () {
+      if (app.params.init) {
+        if (Device.cordova && app.params.initOnDeviceReady) {
+          $(doc).on('deviceready', function () {
+            app.init();
+          });
+        } else {
           app.init();
-        });
-      } else {
-        app.init();
+        }
       }
 
       // Return app instance
@@ -4031,6 +4033,7 @@
     // Additional headers
     if (options.headers) {
       Object.keys(options.headers).forEach(function (headerName) {
+        if (typeof options.headers[headerName] === 'undefined') { return; }
         xhr.setRequestHeader(headerName, options.headers[headerName]);
       });
     }
@@ -4049,11 +4052,9 @@
       Utils.extend(xhr, options.xhrFields);
     }
 
-    var xhrTimeout;
 
     // Handle XHR
     xhr.onload = function onload() {
-      if (xhrTimeout) { clearTimeout(xhrTimeout); }
       if ((xhr.status >= 200 && xhr.status < 300) || xhr.status === 0) {
         var responseData;
         if (options.dataType === 'json') {
@@ -4083,21 +4084,17 @@
     };
 
     xhr.onerror = function onerror() {
-      if (xhrTimeout) { clearTimeout(xhrTimeout); }
       fireCallback('error', xhr, xhr.status, xhr.status);
       fireCallback('complete', xhr, 'error');
     };
 
     // Timeout
     if (options.timeout > 0) {
-      xhr.onabort = function onabort() {
-        if (xhrTimeout) { clearTimeout(xhrTimeout); }
-      };
-      xhrTimeout = setTimeout(function () {
-        xhr.abort();
+      xhr.timeout = options.timeout;
+      xhr.ontimeout = function () {
         fireCallback('error', xhr, 'timeout', 'timeout');
         fireCallback('complete', xhr, 'timeout');
-      }, options.timeout);
+      };
     }
 
     // Ajax start callback
@@ -7483,7 +7480,7 @@
         router.emit('pageMasterUnstack', $newPage[0]);
         if (dynamicNavbar) {
           $(app.navbar.getElByPage($newPage)).removeClass('navbar-master-stacked');
-          router.emi('navbarMasterUnstack', app.navbar.getElByPage($newPage));
+          router.emit('navbarMasterUnstack', app.navbar.getElByPage($newPage));
         }
       }
       // Page init and before init events

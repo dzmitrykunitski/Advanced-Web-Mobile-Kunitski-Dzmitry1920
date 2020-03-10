@@ -19,11 +19,15 @@
     "cordova-plugin-compat": "^1.2.0",
     "cordova-plugin-customurlscheme": "5.0.1",
     "cordova-plugin-inappbrowser": "3.2.0",
-    "cordova-universal-links-plugin": "1.2.1",
+    "cordova-plugin-keyboard": "^1.2.0",
+    "cordova-plugin-splashscreen": "^5.0.3",
+    "cordova-universal-links-plugin": "^1.2.1",
     "cordova-universal-links-plugin-fix": "1.2.1"
   },
   "cordova": {
     "plugins": {
+      "cordova-plugin-keyboard": {},
+      "cordova-plugin-splashscreen": {},
       "cordova-plugin-buildinfo": {},
       "cordova-universal-links-plugin": {},
       "cordova-plugin-browsertab": {},

@@ -40,6 +40,8 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">
     <title>Anwin</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="stylesheet" href="https://unpkg.com/swiper/css/swiper.css">
     <link rel="stylesheet" href="https://unpkg.com/swiper/css/swiper.min.css">
 
@@ -64,20 +66,10 @@
             color: red;
         }
 
-        .fa-id-badge {
-            font-size: x-large;
-        }
-
-        img.demo-lazy {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        div.demo-lazy {
-            background: #aaa;
-            background-size: cover;
-            height: 60vw;
+        .fab input[type="file"] {
+           
+            opacity: 0;
+           
         }
     </style>
     <div id="app" class="theme-dark">
@@ -86,21 +78,17 @@
         <!-- Your main view, should have "view-main" class -->
         <div class="view view-main view-init safe-areas">
             <div class="page" data-name="home">
-                <!--<div class="fab fab-extended fab-center-bottom color-green">
-              <a href="#" data-popup=".popup-login" class="panel-close popup-open">
-                <span style="font-size: 50px;">
-                  <i class="fas fa-power-off"></i>
-                </span>
-    
-              </a>
-            </div>-->
-                <div class="fab fab-extended fab-center-bottom color-green">
-                    <a href="/inloggenmedewerker/">
-                        <span style="font-size: 50px;">
-                            <i class="fas fa-power-off"></i>
-                        </span>
+              
 
-                    </a>
+                <div class="toolbar tabbar tabbar-labels toolbar-bottom">
+                    <div class="toolbar-inner">
+                        <a href="/inloggenmedewerker/" class="tab-link">
+
+                            <span class="tabbar-label">Voor onze medewerkers</span>
+                        </a>
+
+
+                    </div>
                 </div>
 
                 <div class="page-content">
@@ -110,7 +98,7 @@
 
 
                     </div>
-
+                    
 
 
                 </div>
@@ -120,10 +108,10 @@
         </div>
 
     </div>
+
+    <script type="text/javascript" src="cordova.js"></script>
     <script src="framework7/js/framework7.bundle.min.js"></script>
     <script src="js/cordova-app.js"></script>
-    <script type="text/javascript" src="cordova.js"></script>
-    <script type="text/javascript" src="js/index.js"></script>
 
 
     <!-- Cordova APIs -->
@@ -136,8 +124,8 @@
        https://firebase.google.com/docs/web/setup#available-libraries -->
     <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-analytics.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-storage.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-auth.js"></script>
-
     <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
     <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
 
@@ -147,6 +135,8 @@
 
 
     <script src="js/app.js"></script>
+   
+
 </body>
 
 </html>

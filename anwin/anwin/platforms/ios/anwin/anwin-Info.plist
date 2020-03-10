@@ -57,5 +57,7 @@
 			</array>
 		</dict>
 	</array>
+	<key>UILaunchStoryboardName</key>
+	<string>CDVLaunchScreen</string>
 </dict>
 </plist>
