@@ -1,142 +1,145 @@
 <!DOCTYPE html>
-<!--
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-     KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
--->
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <!--
-        Customize this policy to fit your own app's needs. For more guidance, see:
-            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
-        Some notes:
-            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
-            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
-            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
-                * Enable inline JS: add 'unsafe-inline' to default-src
-        -->
+  <meta charset="utf-8">
+  <!--
+  Customize this policy to fit your own app's needs. For more guidance, see:
+      https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+  Some notes:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+      * Enable inline JS: add 'unsafe-inline' to default-src
+  -->
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap: content:">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
 
-    <meta http-equiv="Content-Security-Policy"
-        content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap: content:">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
-
-    <meta name="theme-color" content="#007aff">
-    <meta name="format-detection" content="telephone=no">
-    <meta name="msapplication-tap-highlight" content="no">
-    <title>Anwin</title>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="stylesheet" href="https://unpkg.com/swiper/css/swiper.css">
-    <link rel="stylesheet" href="https://unpkg.com/swiper/css/swiper.min.css">
-
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css"
-        integrity="sha384-G0fIWCsCzJIMAVNQPfjH08cyYaUtMwjJwqiRKxxE/rx96Uroj1BtIQ6MLJuheaO9" crossorigin="anonymous">
-
-    <link rel="apple-touch-icon" href="img/icon.png">
-    <link rel="icon" href="img/icon.png">
-    <link rel="stylesheet" href="framework7/css/framework7.bundle.min.css">
-    <link rel="stylesheet" href="css/icons.css">
-    <link rel="stylesheet" href="css/app.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <meta name="theme-color" content="#007aff">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-tap-highlight" content="no">
+  <title>anwin</title>
+  <!-- web-start -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="img/icon.png">
+  <link rel="icon" href="img/icon.png">
+ 
+  <!-- web-end -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css"
+  integrity="sha384-G0fIWCsCzJIMAVNQPfjH08cyYaUtMwjJwqiRKxxE/rx96Uroj1BtIQ6MLJuheaO9" crossorigin="anonymous">
+  <link rel="stylesheet" href="framework7/css/framework7.bundle.min.css">
+  <link rel="stylesheet" href="css/icons.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/mycss.css">
 </head>
 
 <body>
-    <style>
-        .fa-check-circle {
-            color: greenyellow;
-        }
-
-        .fa-exclamation-circle {
-            color: red;
-        }
-
-        .fab input[type="file"] {
-           
-            opacity: 0;
-           
-        }
-    </style>
-    <div id="app" class="theme-dark">
+  <div id="app">
 
 
-        <!-- Your main view, should have "view-main" class -->
-        <div class="view view-main view-init safe-areas">
-            <div class="page" data-name="home">
-              
 
-                <div class="toolbar tabbar tabbar-labels toolbar-bottom">
-                    <div class="toolbar-inner">
-                        <a href="/inloggenmedewerker/" class="tab-link">
+    <!-- Your main view, should have "view-main" class -->
+    <div class="view view-main">
+      <div class="page" data-name="home">
+        <div class="toolbar tabbar tabbar-labels toolbar-bottom fab-morph-target">
+          <div class="toolbar-inner">
+            <a href="/inloggenmedewerker/" class="tab-link">
+              <span style="font-size: 24px;">
+                <i class="fas fa-user-tie"></i>
+              </span>
+              <span class="tabbar-label">Medewerker</span>
+            </a>
+            <a href="#" data-sheet=".my-sheet-swipe-to-close" class="tab-link sheet-open">
+              <span style="font-size: 24px;">
+                <i class="far fa-user-circle"></i>
+              </span>
+              <span class="tabbar-label">Klant</span>
+            </a>
+          </div>
+        </div>
+        <div class="fab fab-center-bottom color-green fab-morph" data-morph-to=".toolbar.fab-morph-target">
+          <a href="#" class="tab-link">
+            <span style="font-size: 70px;">
+              <i class="fas fa-power-off"></i>
+            </span>
+          </a>
+        </div>
+        <!-- Scrollable page content-->
+        <div class="page-content">
+          <div class="login-screen-title">Welkom in Anwin</div>
+          <div class="block" id="content">
+            <div class="item-media"><img style="width: 170px; height: 170px; border-radius: 50%"
+                src="./img/cordova-splash-screen.png">
+            </div>
+            <div class="fab fab-right-top color-white fab-morph">
 
-                            <span class="tabbar-label">Voor onze medewerkers</span>
-                        </a>
-
-
-                    </div>
-                </div>
-
-                <div class="page-content">
-                    <div class="block-title block-title-medium">Welkom in Anwin</div>
-                    <div class="block block-strong">
-                        <div id="firebaseui-auth-container"></div>
-
-
-                    </div>
-                    
-
-
-                </div>
-
+              <label id="toggleLabel" class="toggle color-black">
+                <input type="checkbox" checked>
+                <span class="toggle-icon"></span>
+              </label>
 
             </div>
+          </div>
+          <div class="block block-strong ">
+            <p>Wij zijn een keten van professionele Night Auditors en Front Office Managers en kunnen uw
+              nachtreceptie volledig,
+              gedeeltelijk, tijdelijk of voor een langere tijd versterken. Onze kerncompetentie is
+              personalizatie en attentie aan de
+              details zodat elke gast zich meteen thuis voelt. Wij streven naar de perfectie door de
+              gedisciplineerde werknemers in
+              dienst te nemen met voortdurende passie voor kwaliteit.</p>
+
+            <p>
+              Wij onderscheiden ons door de hoge servicegraad die wij aan onze gasten in de loop van de
+              nacht bieden. Onze
+              kwalitatieve werknemers ontvangen uw gasten met een glimlach, servicegericht en
+              professionel. Mocht er onverhoopt
+              ooit een calamiteit gebeuren dan weet onze nachtreceptionist hoe te handelen. Wat uw keuze
+              ook is, uw hotel krijgt
+              onze volle aandacht.
+            </p>
+
+          </div>
         </div>
-
+        <div class="sheet-modal my-sheet-swipe-to-close" style="height:auto; --f7-sheet-bg-color: #fff;">
+          <div class="toolbar">
+            <div class="toolbar-inner">
+              <div class="left"></div>
+              <div class="right"><a class="link sheet-close" href="#">Sluiten</a></div>
+            </div>
+          </div>
+          <div class="sheet-modal-inner">
+            <div class="page-content">
+              <div id="firebaseui-auth-container"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-app.js"></script>
 
-    <script type="text/javascript" src="cordova.js"></script>
-    <script src="framework7/js/framework7.bundle.min.js"></script>
-    <script src="js/cordova-app.js"></script>
-
-
-    <!-- Cordova APIs -->
-
-
-    <!-- The core Firebase JS SDK is always required and must be listed first -->
-    <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-app.js"></script>
-
-    <!-- TODO: Add SDKs for Firebase products that you want to use
-       https://firebase.google.com/docs/web/setup#available-libraries -->
-    <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-analytics.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-storage.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-auth.js"></script>
-    <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
-    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
+  <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+  <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth__nl.js"></script>
+  <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.css" />
 
 
-
-    <!-- App scripts -->
-
-
-    <script src="js/app.js"></script>
-   
-
+  <!-- CORDOVA_PLACEHOLDER_DONT_REMOVE -->
+  <!-- Framework7 library -->
+  <script src="framework7/js/framework7.bundle.min.js"></script>
+  <!-- Cordova APIs -->
+  <script src="js/cordova-app.js"></script>
+  <!-- App scripts -->
+  <script src="js/app.js"></script>
 </body>
 
 </html>
