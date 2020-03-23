@@ -7,9 +7,9 @@
 * Duur: 4 uur
 
 ### Week 2 - 3
-* Probleem: We werken met Cordova. Als we Google service beginnen implementeren, hebben we een probleem. Google (inloggen) werkt niet. Er was een probleem met "universal-link". Op de documentatie staat niet dat we eerst de command "cordova plugin add cordova-universal-links-plugin" moeten invoeren. Daarna moeten we de command "cordova plugin add cordova-universal-links-plugin-fix --save" invoeren. We hebben ongeveer 10 uur besteed om de oplossing te vinden.
+* Probleem: We werken met Cordova. Als we Google service beginnen implementeren, hebben we een probleem. Google (inloggen) werkt niet. Er was een probleem met "universal-link". Op de documentatie staat niet dat we eerst de command "cordova plugin add cordova-universal-links-plugin" moeten invoeren. Daarna moeten we de command "cordova plugin add cordova-universal-links-plugin-fix --save" invoeren.
 * Referentie: https://firebase.google.com/docs/auth/web/cordova
-* Duur: 10 uur
+* Duur: 8 uur
 
 ### Week 4
 *  Topic: Werken met Firestore ( De foto's van onze werkers opslaan in Firestore als ze op onze platform beginnen registreren. ) .
