@@ -10,7 +10,7 @@
             </div>
         </div>
     </div>
-    <div style="display: none;" id="fotoLabel" class="fab fab-extended fab-center-center">
+   <!-- <div style="display: none;" id="fotoLabel" class="fab fab-extended fab-center-center">
         <a id="btnFoto" href="#">
             <span style="font-size: 70px;">
                 <i class="fas fa-camera-retro"></i>
@@ -18,7 +18,7 @@
 
         </a>
         <input id="btnImg" type="file" accept="image/*" hidden>
-    </div>
+    </div>-->
 
     <!-- page-content has additional login-screen content -->
     <div class="page-content login-screen-content">
@@ -68,7 +68,7 @@
                 </ul>
             </div>
         </form>
-        <form id="FormLabelRegistreren" style="display: none;">
+        <form id="FormLabelNaamVoornaam" style="display: none;">
             <div class="list">
                 <ul>
                     <li class="item-content item-input">
@@ -81,27 +81,43 @@
                             </div>
                         </div>
                     </li>
-                    <li class="item-content item-input">
-
-                    </li>
 
                 </ul>
             </div>
             <div class="list">
                 <ul>
                     <li>
-                        <a href="#" id="btnVerderFoto" class="col button button-large button-raised button-fill">Verder</a>
+                        <a href="#" id="btnVerderFoto"
+                            class="col button button-large button-raised button-fill">Verder</a>
                     </li>
                 </ul>
             </div>
 
         </form>
-        <div style="display: none;" id="labelRegistreren" class="list">
+        <div style="display: none;" id="fotoLabel" class="list">
             <ul>
                 <li>
-                    <a href="#" id="btnRegistreren" class="col button button-large button-raised button-fill">Registreren</a>
+                    <a href="#" class="col button button-large button-raised button-fill">Foto toevoegen</a>
+                    <input id="btnImg" type="file" accept="image/*" hidden>
                 </li>
             </ul>
         </div>
+        <div style="display: none;" id="verderNaarRegestreren"  class="list">
+            <ul>
+                <li>
+                    <a href="#"
+                        class="col button button-large button-raised button-fill">Verder</a>
+                </li>
+            </ul>
+        </div>
+        <div style="display: none;" id="labelRegistreren" class="list">
+            <ul>
+                <li>
+                    <a href="#" id="btnRegistreren"
+                        class="col button button-large button-raised button-fill">Registreren</a>
+                </li>
+            </ul>
+        </div>
+
     </div>
 </div>

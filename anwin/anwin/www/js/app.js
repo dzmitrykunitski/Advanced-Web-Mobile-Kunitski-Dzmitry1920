@@ -1,3 +1,70 @@
+var firebaseConfig = {
+  apiKey: "AIzaSyD9S37G8dNCnZWYe7eAD4R3MaFXq9B2ggY",
+  authDomain: "anwin-fa985.firebaseapp.com",
+  databaseURL: "https://anwin-fa985.firebaseio.com",
+  projectId: "anwin-fa985",
+  storageBucket: "anwin-fa985.appspot.com",
+  messagingSenderId: "326563094597",
+  appId: "1:326563094597:web:b32a9fbe42cbb78e05832c",
+  measurementId: "G-Y1X3EJGMDF"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+firebase.analytics();
+firebase.auth();
+firebase.storage();
+var ui = new firebaseui.auth.AuthUI(firebase.auth());
+var uiConfig = {
+  callbacks: {
+    signInSuccessWithAuthResult: function (authResult, redirectUrl) {
+      // User successfully signed in.
+      // Return type determines whether we continue the redirect automatically
+      // or whether we leave that to developer to handle.
+      notificationLogin.open();
+
+      var user = firebase.auth().currentUser;
+      if (user != null) {
+        firebase.firestore().collection("klant").doc(user.uid).set({
+          name: user.displayName,
+          email: user.email,
+          photoUrl: user.photoURL,
+          uid: user.uid
+        })
+          .then(function () {
+            console.log("Document successfully written!");
+          })
+          .catch(function (error) {
+            app.dialog.alert(error);
+          });
+        sessionStorage.setItem('klant_id', user.uid);
+        klant_id = sessionStorage.getItem('klant_id');
+
+      }
+      return false;
+    },
+    uiShown: function () {
+
+      // The widget is rendered.
+      // Hide the loader.
+
+    }
+  },
+  // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
+
+
+  signInOptions: [
+    // Leave the lines as is for the providers you want to offer your users.
+
+    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+
+
+  ],
+  // Terms of service url.
+
+  // Privacy policy url.
+  privacyPolicyUrl: '<your-privacy-policy-url>'
+};
+ui.start('#firebaseui-auth-container', uiConfig);
 
 
 var $$ = Dom7;
@@ -70,6 +137,8 @@ var app = new Framework7({
       },
       on: {
         pageInit: function (event, page) {
+          loadMessagesMedewerker();
+          saveMessageMedewerker();
 
 
         },
@@ -83,12 +152,8 @@ var app = new Framework7({
       },
       on: {
         pageInit: function (event, page) {
-
-          TerugNaarIndex();
           loadMessages();
           saveMessage();
-
-
 
 
 
@@ -104,6 +169,15 @@ var app = new Framework7({
       on: {
         pageInit: function (event, page) {
           lijstenVanDeKlanten();
+          var swipeToClosePopup = app.popup.create({
+            el: '.demo-popup-swipe-handler',
+            swipeToClose: true,
+          });
+          app.sheet.create({
+            el: '.my-sheet-swipe-to-close2',
+            swipeToClose: true,
+            backdrop: true,
+          });
 
 
 
@@ -143,7 +217,7 @@ var app = new Framework7({
       },
       on: {
         pageInit: function (event, page) {
-          loadMedewerkersGgegevens();
+          loadMedewerkersGegegevens();
           afsluitenSessie();
 
         },
@@ -242,6 +316,20 @@ var app = new Framework7({
       }
     },
     {
+      path: '/medewerkerRegistratiePagina/',
+      url: 'medewerkerRegistratiePagina.html',
+      options: {
+        transition: 'f7-flip',
+      },
+      on: {
+        pageInit: function (event, page) {
+
+          bewaarMedewerker();
+        },
+
+      }
+    },
+    {
       path: '/wijzigMedewerkerGegevens/',
       url: 'wijzigMedewerkerGegevens.html',
       options: {
@@ -249,12 +337,41 @@ var app = new Framework7({
       },
       on: {
         pageInit: function (event, page) {
+          wijzigWachtwoord();
+          wijzigNaamVoornaam();
+
 
         },
 
       }
     },
+    {
+      path: '/herstelWachtwoord/',
+      url: 'herstelWachtwoord.html',
+      options: {
+        transition: 'f7-flip',
+      },
+      on: {
+        pageInit: function (event, page) {
+          $$('#btnHerstelWachtwoordVerder').on('click', function () {
+            var email = document.getElementById('emailVerficatie').value;
+            wachtwoord = document.getElementById('wachtwoord').value;
+            herhaalWachtwoord = document.getElementById('herhaalWachtwoord').value;
+            $$('#inputLabelWachtwoord').hide();
+            $$('#btnHerstelWachtwoordLabel').hide();
+            $$('#labelHerstelInput').css('display', 'block');
+            $$('#labelHerstelBtn').css('display', 'block');
 
+          });
+          $$('#btnHerstelWachtwoord').on('click', function () {
+
+            view.router.navigate('/inloggenmedewerker/', { transition: 'f7-circle' });
+
+          });
+        },
+
+      }
+    },
     {
       path: '/inloggenmedewerker/',
       url: 'inloggenmedewerker.html',
@@ -293,73 +410,6 @@ var app = new Framework7({
         // Init cordova APIs (see cordova-app.js)
         cordovaApp.init(f7);
       }
-      var firebaseConfig = {
-        apiKey: "AIzaSyD9S37G8dNCnZWYe7eAD4R3MaFXq9B2ggY",
-        authDomain: "anwin-fa985.firebaseapp.com",
-        databaseURL: "https://anwin-fa985.firebaseio.com",
-        projectId: "anwin-fa985",
-        storageBucket: "anwin-fa985.appspot.com",
-        messagingSenderId: "326563094597",
-        appId: "1:326563094597:web:b32a9fbe42cbb78e05832c",
-        measurementId: "G-Y1X3EJGMDF"
-      };
-      // Initialize Firebase
-      firebase.initializeApp(firebaseConfig);
-      firebase.analytics();
-      firebase.auth();
-      firebase.storage();
-      var ui = new firebaseui.auth.AuthUI(firebase.auth());
-      var uiConfig = {
-        callbacks: {
-          signInSuccessWithAuthResult: function (authResult, redirectUrl) {
-            // User successfully signed in.
-            // Return type determines whether we continue the redirect automatically
-            // or whether we leave that to developer to handle.
-            notificationLogin.open();
-
-            var user = firebase.auth().currentUser;
-            if (user != null) {
-              firebase.firestore().collection("klant").doc(user.uid).set({
-                name: user.displayName,
-                email: user.email,
-                photoUrl: user.photoURL,
-                uid: user.uid
-              })
-                .then(function () {
-                  console.log("Document successfully written!");
-                })
-                .catch(function (error) {
-                  app.dialog.alert(error);
-                });
-              sessionStorage.setItem('klant_id', user.uid);
-              klant_id = sessionStorage.getItem('klant_id');
-
-            }
-            return true;
-          },
-          uiShown: function () {
-
-            // The widget is rendered.
-            // Hide the loader.
-
-          }
-        },
-        // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
-
-
-        signInOptions: [
-          // Leave the lines as is for the providers you want to offer your users.
-
-          firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-
-
-        ],
-        // Terms of service url.
-
-        // Privacy policy url.
-        privacyPolicyUrl: '<your-privacy-policy-url>'
-      };
-      ui.start('#firebaseui-auth-container', uiConfig);
 
 
     },
@@ -401,18 +451,26 @@ function switchDarkTheme() {
   })
 }
 
+// verwijzen naar de opslag
+// ---------------------------
+var storage = firebase.storage();
+var storageRef = storage.ref();
 
-
+// id's voor de klant en de medewerker.
 // ---------------------------
 let id;
 let klant_id;
-let medewerker_id;
+var medewerker_id;
 
-var uid, voornaam, naam, email, password, gebruikersnaam;
-var urlRef = '';
-
-
+// de variablen om de gegevens te bewaren
 // ----------------------------
+var email = "";
+var wachtwoord = "";
+var herhaalWachtwoord = "";
+var displayNaam = "";
+var fotoRef = "";
+var fileNaam = ""
+
 
 var notificationRegist = app.notification.create({
   icon: '<i class="fas fa-check-circle"></i>',
@@ -530,6 +588,7 @@ let opties = {
 
 // ----------------------------
 
+
 function getLoginApiMedewerker() {
   $$('#btnLoginMedewerker').on('click', function () {
     var email = document.getElementById('emailMedewerker').value;
@@ -556,10 +615,9 @@ function getLoginApiMedewerker() {
 }
 
 function getRegistApi() {
-  $$('#btnFoto').on('click', function () {
-    document.getElementById('btnImg').click();
 
-  });
+  var file = "";
+
   $$('#btnVerder').on('click', function () {
     email = document.getElementById('email').value;
     wachtwoord = document.getElementById('wachtwoord').value;
@@ -577,100 +635,199 @@ function getRegistApi() {
       app.dialog.alert('De combinatie van de wachtwoord is niet juist!');
       return;
     }
+    else {
 
-    // Create user with email and pass.
-    // [START createwithemail]
-    firebase.auth().createUserWithEmailAndPassword(email, wachtwoord).then(function () {
-      //$$('#fotoLabel').css('display', 'block');
-      $$('#FormLabelRegistreren').css('display', 'block');
-      $$('#FormLabelVerder').hide();
+      // Create user with email and pass.
+      // [START createwithemail]
+      firebase.auth().createUserWithEmailAndPassword(email, wachtwoord).then(function () {
+        $$('#FormLabelVerder').hide();
+        $$('#FormLabelNaamVoornaam').css('display', 'block');
+
+      }).catch(function (error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // [START_EXCLUDE]
+        if (errorCode == 'auth/weak-password') {
+          app.dialog.alert('Vul een een sterke wachtwoord aub!');
+        } else {
+          app.dialog.alert(errorMessage);
+
+        }
+        app.dialog.alert(error);
+        // [END_EXCLUDE]
+      });
+
+    }
 
 
-
-    }).catch(function (error) {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      // [START_EXCLUDE]
-      if (errorCode == 'auth/weak-password') {
-        app.dialog.alert('Vul een een sterke wachtwoord aub!');
-      } else {
-        app.dialog.alert(errorMessage);
-
-      }
-      console.log(error);
-      // [END_EXCLUDE]
-    });
   });
   $$('#btnVerderFoto').on('click', function () {
-    $$('#fotoLabel').css('display', 'block');
-    $$('#FormLabelRegistreren').hide();
-    $$('#labelRegistreren').css('display', 'block');
-    var user = firebase.auth().currentUser;
-    user.updateProfile({
-      displayName: document.getElementById('naamVoornaam').value,
+    displayNaam = document.getElementById('naamVoornaam').value;
+    if (displayNaam.length <= 0) {
 
-    }).then(function () {
+      app.dialog.alert('Vul een naam en voornaam!');
+      return;
+    }
+    else {
+      var user = firebase.auth().currentUser;
+      user.updateProfile({
+        displayName: document.getElementById('naamVoornaam').value,
 
-    }).catch(function (error) {
-      app.dialog.alert(error);
-    });
+      }).then(function () {
+
+        $$('#FormLabelNaamVoornaam').hide();
+        $$('#fotoLabel').css('display', 'block');
+        $$('#verderNaarRegestreren').css('display', 'block');
+
+      }).catch(function (error) {
+        app.dialog.alert(error);
+      });
+    }
+
+
 
 
   });
-
-  $$('#btnRegistreren').on('click', function () {
-
-    var storage = firebase.storage();
-    // Create a storage reference from our storage service
-    var storageRef = storage.ref();
-    var fileRef;
+  $$('#fotoLabel').on('click', function () {
+    document.getElementById('btnImg').click();
 
 
-    var file = document.getElementById("btnImg").files[0];
-    fileRef = storageRef.child(file.name);
 
-    fileRef.put(file).then(function (snapshot) {
-      console.log('Uploaded a blob or file!');
+  });
+  $$('#verderNaarRegestreren').on('click', function () {
+    file = document.getElementById("btnImg").files[0];
+    if (document.getElementById("btnImg").files.length == 0) {
+      app.dialog.alert('Selecteer een foto!');
+      return;
 
-
-    }).catch(function (error) {
-      app.dialog.alert(error);
-    });
-    app.dialog.confirm('Wil je doorgaan?', function () {
-      fileRef.getDownloadURL().then(function (url) {
-        var user = firebase.auth().currentUser;
-        user.updateProfile({
-          photoURL: url
+    }
+    else {
+      fileNaam = file.name;
+      fotoRef = storageRef.child(file.name);
+      fotoRef.put(file).then(function (snapshot) {
 
 
-        }).then(function () {
-          firebase.firestore().collection("medewerker").doc(user.uid).set({
-            name: user.displayName,
-            email: user.email,
-            photoUrl: user.photoURL,
-            uid: user.uid
-          })
-            .then(function () {
-              console.log("Document successfully written!");
-              notificationLoginEnRegistrerenMedewerker.open();
-            })
-            .catch(function (error) {
-              app.dialog.alert(error);
-            });
-        }).catch(function (error) {
-          app.dialog.alert(error);
-        });
+      }).catch(function (error) {
+        app.dialog.alert(error);
+      });
+      view.router.navigate('/medewerkerRegistratiePagina/', { transition: 'f7-circle' });
 
-
-      }).catch(function (error) { });
-    });
+    }
 
   });
 
 }
+function wijzigWachtwoord() {
+  $$('#btnWijzigenWachtwoord').on('click', function () {
+    wachtwoord = document.getElementById('wachtwoord').value;
+    herhaalWachtwoord = document.getElementById('herhaalWachtwoord').value;
+
+    if (wachtwoord.length < 4) {
+      app.dialog.alert('Vul een een sterke wachtwoord aub!');
+      return;
+    }
+    if (herhaalWachtwoord != wachtwoord) {
+      app.dialog.alert('De combinatie van de wachtwoord is niet juist!');
+      return;
+    }
+    else {
+      var user = firebase.auth().currentUser;
+      user.updatePassword(wachtwoord).then(function () {
+        app.dialog.alert('Uw wachtwoord is gewijzigd!');
+        document.getElementById('wachtwoord').value = " ";
+        document.getElementById('herhaalWachtwoord').value = " ";
+        // Update successful.
+      }).catch(function (error) {
+        app.dialog.alert(error);
+
+        // An error happened.
+      });
+    }
+  });
+}
+function wijzigNaamVoornaam() {
+  $$('#wijzigNaamVoornaam').on('click', function () {
+    var user = firebase.auth().currentUser;
+
+    if (document.getElementById('naamVoornaam').value < 0) {
+      app.dialog.alert('Vul de juiste naam en voornaam');
+      return;
+
+    }
+    else {
+      user.updateProfile({
+        displayName: document.getElementById('naamVoornaam').value,
+
+      }).then(function () {
+        app.dialog.alert('Uw naam is gewijzigd!');
+        document.getElementById('naamVoornaam').value = " ";
+        // Update successful.
+      }).catch(function (error) {
+        // An error happened.
+      });
+
+    }
+
+  });
+}
+function bewaarMedewerker() {
+  var line = "";
+  var line2 = "";
+  var linkFoto = "";
+  app.dialog.alert(displayNaam);
+  app.dialog.alert(fileNaam);
+  var fotoRef = storageRef.child(fileNaam);
+
+  $$('#btnRegistrerenMedewerker').on('click', function () {
+    var fotoRef2 = storageRef.child(fileNaam);
+    fotoRef2.getDownloadURL().then(function (url) {
+
+      var user = firebase.auth().currentUser;
+      user.updateProfile({
+        photoURL: url
 
 
+      }).then(function () {
+        firebase.firestore().collection("medewerker").doc(user.uid).set({
+          name: user.displayName,
+          email: user.email,
+          photoUrl: user.photoURL,
+          uid: user.uid
+        })
+          .then(function () {
+            console.log("Document successfully written!");
+            notificationLoginEnRegistrerenMedewerker.open();
+          })
+          .catch(function (error) {
+            app.dialog.alert(error);
+          });
+      }).catch(function (error) {
+        app.dialog.alert(error);
+      });
+
+
+
+
+    }).catch(function (error) {
+      app.dialog.alert(error);
+
+
+    });
+  });
+
+  fotoRef.getDownloadURL().then(function (url) {
+    line += '<img style="width: 120px; height: 120px; border-radius: 50%" src="' + url + '">';
+    line2 += '<div class="login-screen-title">Welkom, ' + displayNaam + '</div>';
+    $$('.fotoContanier').append(line);
+    $$('#mede_profileVoorRegistreren').prepend(line2);
+
+
+  }).catch(function (error) {
+
+
+  });
+}
 function getMedewerkers() {
 
   firebase.firestore().collection("medewerker").get().then(function (querySnapshot) {
@@ -722,8 +879,6 @@ function TerugNaarIndex() {
 
 function sendReservatie() {
   $$('#btnReserveer').on('click', function () {
-    // let startENstartTijd = document.getElementById('demo-calendar-range_start').value + ' ' + document.getElementById('picker-starttijd').value;
-    //let eindEneindTijd = document.getElementById('demo-calendar-range_end').value + ' ' + document.getElementById('picker-eindtijd').value;
     let start_datum = document.getElementById('demo-calendar-range_end').value;
     let eind_datum = document.getElementById('demo-calendar-range_end').value;
     let start_tijd = document.getElementById('picker-starttijd').value;
@@ -1356,7 +1511,7 @@ function afsluitenSessie() {
   });
 }
 
-function loadMedewerkersGgegevens() {
+function loadMedewerkersGegegevens() {
   var user = firebase.auth().currentUser;
   let line = "";
   let line2 = "";
@@ -1365,8 +1520,8 @@ function loadMedewerkersGgegevens() {
     user.providerData.forEach(function (profile) {
 
 
-      line += '<div class="login-screen-title">Welkom, ' + profile.displayName + '</div>';
-      line2 += '<div id="linkNaarWijzigen" class="item-media"><a href="/wijzigMedewerkerGegevens/"><img style="width: 120px; height: 120px; border-radius: 50%" src="' + profile.photoURL + '"></a></div>';
+      line += '<div class="login-screen-title">' + profile.displayName + '</div>';
+      line2 += '<div class="fotoContanier" class="item-media"><a href="/wijzigMedewerkerGegevens/"><img style="width: 120px; border: 7px solid #fff; height: 120px; border-radius: 50%" src="' + profile.photoURL + '"></a></div>';
 
 
     });
@@ -1384,8 +1539,8 @@ function loadKlantGgegevens() {
   if (user != null) {
     user.providerData.forEach(function (profile) {
 
-      line += '<div class="login-screen-title">Welkom, ' + profile.displayName + '</div>';
-      line2 += '<div class="item-media"><img style="width: 120px; height: 120px; border-radius: 50%" src="' + profile.photoURL + '"></div>';
+      line += '<div class="login-screen-title">' + profile.displayName + '</div>';
+      line2 += '<div class="item-media"><img style="width: 120px;  height: 120px; border-radius: 50%" src="' + profile.photoURL + '"></div>';
 
 
     });
@@ -1396,12 +1551,13 @@ function loadKlantGgegevens() {
 
   }
 }
+
 function onzeMedewerkerGegevens() {
   let line = "";
   var mede_id = "";
   firebase.firestore().collection("medewerker").get().then(function (querySnapshot) {
     querySnapshot.forEach(function (doc) {
-      line += '<li class="medeList"  value="' + doc.id + '"><a href="#" data-sheet=".my-sheet-swipe-to-close1" class="item-link item-content sheet-open"><div class="item-media"><img src="' + doc.data().photoUrl + '" width="80" height="80"/></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' + doc.data().name + '</div></div><div class="item-subtitle">Meer ...</div></div></a></li>';
+      line += '<li class="medeList"  value="' + doc.id + '"><a href="#" data-sheet=".my-sheet-swipe-to-close1" class="item-link item-content sheet-open"><div class="item-media"><img src="' + doc.data().photoUrl + '" width="80" height="80"/></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' + doc.data().name + '</div></div><div class="item-subtitle"></div></div></a></li>';
       //line += '<li class="accordion-item"><a href="#" class="item-content item-link list-button"><div class="item-media"> <img src="' + doc.data().photoUrl + '"style="width: 100px; height: 100px; border-radius: 50%"></div><div class="item-inner"><div class="item-title">' + doc.data().name + '</div></div></a><div class="accordion-item-content">Some info</div></li>';
     });
     $$('#medewerkersGegevens').html(line);
@@ -1434,37 +1590,129 @@ function onzeMedewerkerGegevens() {
     });
   });
 
-
 }
+
+// functies om van een ingelogde gebruiker gegevens te krijgen.
 function getUserName() {
   return firebase.auth().currentUser.displayName;
 }
 function getUserUid() {
   return firebase.auth().currentUser.uid;
 }
+function getUserPhoto() {
+  return firebase.auth().currentUser.photoURL;
+}
+// opslaan berichten 
 function saveMessage() {
+
   $$('#sendMessageButton').on('click', function () {
+    var uidKlant = getUserUid();
+    var naamKlant = getUserName();
+    var photoKlant = getUserPhoto();
+
+    var uidMedewerker = sessionStorage.getItem('medewerker_id');
+
     var messageText = document.getElementById('textMessage').value;
-    firebase.firestore().collection('messages').add({
-      idMedewerker: sessionStorage.getItem('medewerker_id'),
-      idKlant: getUserUid(),
-      name: getUserName(),
+
+    var messageRef = firebase.firestore().collection('klant').doc(uidKlant)
+      .collection('messages').doc(uidMedewerker);
+    messageRef.collection('ms').add({
+      uidUser: uidKlant,
       text: messageText,
+      naamKlant: naamKlant,
+      photoKlant: photoKlant,
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }).then(function () {
-      loadMessages();
+      document.getElementById('textMessage').value = '';
     }).catch(function (error) {
       console.error('Error writing new message to Firebase Database', error);
     });
+
+    var messageRefMed = firebase.firestore().collection('medewerker').doc(uidMedewerker)
+      .collection('messages').doc(uidKlant);
+    messageRefMed.collection('ms').add({
+      uidUser: uidKlant,
+      text: messageText,
+      naamKlant: naamKlant,
+      photoKlant: photoKlant,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(function () {
+
+    }).catch(function (error) {
+      console.error('Error writing new message to Firebase Database', error);
+    });
+
   });
 
 }
+
+function loadMessages() {
+
+  let line = "";
+  let line2 = "";
+
+  var uidKlant = sessionStorage.getItem('klant_id');
+  var uidMedewerker = sessionStorage.getItem('medewerker_id');
+
+  firebase.firestore().collection("medewerker").where("uid", "==", uidMedewerker)
+    .get()
+    .then(function (querySnapshot) {
+
+      let navbardisplayNaam = "";
+      let navbardisplayFoto = "";
+      querySnapshot.forEach(function (doc) {
+        navbardisplayNaam += doc.data().name;
+        navbardisplayFoto += '<img style="border-radius: 50%;" width="42" height="42" src="' + doc.data().photoUrl + '">';
+
+
+      });
+      $$('#navbarNaam').text(navbardisplayNaam);
+      $$('#navbarFoto').html(navbardisplayFoto);
+
+
+    })
+    .catch(function (error) {
+      console.log("Error getting documents: ", error);
+    });
+
+  var messageRef = firebase.firestore().collection('klant').doc(uidKlant)
+    .collection('messages').doc(uidMedewerker);
+
+  messageRef.collection('ms').orderBy('timestamp').onSnapshot(function (snapshot) {
+
+    snapshot.docChanges().forEach(function (change) {
+      if (change.type === 'removed') {
+
+
+
+      } else if (change.type === 'added') {
+        var message = change.doc.data();
+
+        if (message.uidUser == uidKlant) {
+
+          line += '<div class="message message-sent"><div class="message-content"><div class="message-header">' + message.naamKlant + '</div><div class="message-bubble"><div class="message-text">' + message.text + '</div></div></div></div>';
+
+        }
+        else if (message.uidUser == uidMedewerker) {
+          line += '<div class="message message-received"><div class="message-content"><div class="message-header">' + message.naamMedewerker + '</div><div class="message-bubble"><div class="message-text">' + message.text + '</div></div></div></div>';
+
+
+        }
+      }
+    });
+    $$('#berichten').html(line);
+
+  });
+}
+
 function lijstenVanDeKlanten() {
   let line = "";
   var kl_id = "";
   firebase.firestore().collection("klant").get().then(function (querySnapshot) {
     querySnapshot.forEach(function (doc) {
-      line += '<li class="klantList"  value="' + doc.id + '"><a href="/berichtenVoorMedewerker/" class="item-link item-content"><div class="item-media"><img src="' + doc.data().photoUrl + '" width="80" height="80"/></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' + doc.data().name + '</div></div><div class="item-subtitle">Meer ...</div></div></a></li>';
+      //line += '<li class="klantList"  value="' + doc.id + '"><a href="#" class="item-link item-content" data-sheet=".my-sheet-swipe-to-close2"><div class="item-media"><img src="' + doc.data().photoUrl + '" width="80" height="80"/></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' + doc.data().name + '</div></div><div class="item-subtitle">Meer ...</div></div></a></li>';
+      line += '<li class="klantList"  value="' + doc.id + '"><a href="#" data-sheet=".my-sheet-swipe-to-close2" class="item-link item-content sheet-open"><div class="item-media"><img src="' + doc.data().photoUrl + '" width="80" height="80"/></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' + doc.data().name + '</div></div><div class="item-subtitle"></div></div></a></li>';
+
     });
     $$('#lijstKlanten').html(line);
 
@@ -1473,26 +1721,148 @@ function lijstenVanDeKlanten() {
       sessionStorage.setItem('kl_id', kl_id);
 
     });
+    $$('.my-sheet-swipe-to-close2').on('sheet:opened', function (e) {
+
+      firebase.firestore().collection("klant").where("uid", "==", kl_id)
+        .get()
+        .then(function (querySnapshot) {
+          let line = "";
+          querySnapshot.forEach(function (doc) {
+            line += '<div class="block-title block-title-large">' + doc.data().name + '</div><div id="fotoKlant"><img style="width: 120px; height: 120px; border-radius: 50%" src="' + doc.data().photoUrl + '"></div>';
+
+
+          });
+          $$('#popupKlantGegevens').html(line);
+          $$('#popupKlantGegevens').append('<div class="fab fab-right-bottom fab-morph" data-morph-to=".toolbar.fab-morph-target"><a href="/berichtenVoorMedewerker/" class="popup-open"><span style="font-size: 50px;"><i class="fab fa-facebook-messenger"></i></span></a></div>');
+
+        })
+        .catch(function (error) {
+          console.log("Error getting documents: ", error);
+        });
+
+
+    });
 
   });
 
 }
-function loadMessages() {
+
+function saveMessageMedewerker() {
+
+  $$('#sendMessageButton').on('click', function () {
+    var uidMedewerker = getUserUid();
+    var uidKlant = sessionStorage.getItem('kl_id');
+    var naamMedewerker = getUserName();
+    var photoMedewerker = getUserPhoto();
+
+    var messageText = document.getElementById('textMessage').value;
+
+    var messageRef = firebase.firestore().collection('medewerker').doc(uidMedewerker)
+      .collection('messages').doc(uidKlant);
+    messageRef.collection('ms').add({
+      uidUser: uidMedewerker,
+      text: messageText,
+      naamMedewerker: naamMedewerker,
+      photoMedewerker: photoMedewerker,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(function () {
+
+      //loadMessagesMedewerker();
+      document.getElementById('textMessage').value = '';
+    }).catch(function (error) {
+      console.error('Error writing new message to Firebase Database', error);
+    });
+
+    var messageRefKlant = firebase.firestore().collection('klant').doc(uidKlant)
+      .collection('messages').doc(uidMedewerker);
+    messageRefKlant.collection('ms').add({
+      uidUser: uidMedewerker,
+      text: messageText,
+      naamMedewerker: naamMedewerker,
+      photoMedewerker: photoMedewerker,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(function () {
+
+    }).catch(function (error) {
+      console.error('Error writing new message to Firebase Database', error);
+    });
+
+  });
+
+}
+function loadMessagesMedewerker() {
   let line = "";
-  firebase.firestore().collection('messages').where("idKlant", "==", sessionStorage.getItem('klant_id')).where("idMedewerker", "==", sessionStorage.getItem('medewerker_id'))
+  var uidKlant = sessionStorage.getItem('kl_id');
+  var uidMedewerker = getUserUid();
+
+
+  firebase.firestore().collection("klant").where("uid", "==", uidKlant)
     .get()
     .then(function (querySnapshot) {
+
+      let navbardisplayNaam = "";
+      let navbardisplayFoto = "";
       querySnapshot.forEach(function (doc) {
-        // doc.data() is never undefined for query doc snapshots
-        line += '<div class="message message-sent"><div class="message-content"><div class="message-bubble"><div class="message-text">' + doc.data().text + '</div></div></div></div>'
-        //console.log(doc.id, " => ", doc.data());
+        navbardisplayNaam += doc.data().name;
+        navbardisplayFoto += '<img style="border-radius: 50%;" width="42" height="42" src="' + doc.data().photoUrl + '">';
+
+
       });
-      $$('#berichten').html(line);
+      $$('#navbarNaam').text(navbardisplayNaam);
+      $$('#navbarFoto').html(navbardisplayFoto);
+
 
     })
     .catch(function (error) {
       console.log("Error getting documents: ", error);
     });
+  var messageRef = firebase.firestore().collection('medewerker').doc(uidMedewerker)
+    .collection('messages').doc(uidKlant);
+  /*messageRef.collection('ms').orderBy('timestamp').get().then(function (querySnapshot) {
+    querySnapshot.forEach(function (doc) {
+      if (doc.data().uidUser == uidMedewerker) {
+        line += '<div class="message message-sent"><div class="message-content"><div class="message-bubble"><div class="message-text">' + doc.data().text + '</div></div></div></div>'
+
+      }
+      else if (doc.data().uidUser == uidKlant) {
+        line += '<div class="message message-received"><div class="message-content"><div class="message-bubble"><div class="message-text">' + doc.data().text + '</div></div></div></div>'
+
+      }
+      // doc.data() is never undefined for query doc snapshots
+      // line += '<div class="message message-sent"><div class="message-content"><div class="message-bubble"><div class="message-text">' + doc.data().text + '</div></div></div></div>'
+      //console.log(doc.id, " => ", doc.data());
+    });
+    $$('#berichten').html(line);
+
+  })
+    .catch(function (error) {
+      console.log("Error getting documents: ", error);
+    });*/
+
+  messageRef.collection('ms').orderBy('timestamp').onSnapshot(function (snapshot) {
+
+    snapshot.docChanges().forEach(function (change) {
+      if (change.type === 'removed') {
+
+
+
+      } else if (change.type === 'added') {
+        var message = change.doc.data();
+
+        if (message.uidUser == uidMedewerker) {
+          line += '<div class="message message-sent"><div class="message-content"><div class="message-header">' + message.naamMedewerker + '</div><div class="message-bubble"><div class="message-text">' + message.text + '</div></div></div></div>';
+
+        }
+        else if (message.uidUser == uidKlant) {
+          line += '<div class="message message-received"><div class="message-content"><div class="message-header">' + message.naamKlant + '</div><div class="message-bubble"><div class="message-text">' + message.text + '</div></div></div></div>';
+
+
+        }
+      }
+    });
+    $$('#berichten').html(line);
+
+  });
 
   // Create the query to load the last 12 messages and listen for new ones.
   /*if (loadMessageQuery === undefined) {
@@ -1537,5 +1907,4 @@ function loadMessages() {
 
   });*/
 }
-
 

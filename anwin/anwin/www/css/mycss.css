@@ -16,9 +16,12 @@
     justify-content: center;
 }
 
-#linkNaarWijzigen {
+.fotoContanier {
     display: flex;
     justify-content: center;
+}
+#trest{
+  
 }
 
 #content {
