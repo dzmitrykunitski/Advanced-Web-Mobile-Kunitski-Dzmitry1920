@@ -6,14 +6,14 @@ Framework7 app created with following options:
 
 ```
 {
-  "cwd": "/Users/dimakunitski/Documents/anwin",
+  "cwd": "/Users/dimakunitski/Documents/test3",
   "type": [
-    "cordova",
-    "web"
+    "web",
+    "cordova"
   ],
   "name": "anwin",
   "framework": "core",
-  "template": "single-view",
+  "template": "blank",
   "bundler": false,
   "cssPreProcessor": false,
   "theming": {
@@ -34,9 +34,10 @@ Framework7 app created with following options:
       "cordova-plugin-statusbar",
       "cordova-plugin-keyboard",
       "cordova-plugin-splashscreen",
+      "cordova-plugin-wkwebview-file-xhr",
+      "cordova-plugin-inappbrowser",
       "cordova-plugin-safariviewcontroller",
-      "cordova-plugin-file",
-      "cordova-plugin-inappbrowser"
+      "cordova-plugin-file"
     ]
   }
 }
@@ -58,13 +59,13 @@ Cordova project located in `cordova` folder. You shouldn't modify content of `co
 Assets (icons, splash screens) source images located in `assets-src` folder. To generate your own icons and splash screen images, you will need to replace all assets in this directory with your own images (pay attention to image size and format), and run the following command in the project directory:
 
 ```
-framework7 generate-assets
+framework7 assets
 ```
 
 Or launch UI where you will be able to change icons and splash screens:
 
 ```
-framework7 generate-assets --ui
+framework7 assets --ui
 ```
 
 ## Documentation & Resources

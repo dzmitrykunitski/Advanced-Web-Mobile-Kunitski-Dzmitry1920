@@ -10,8 +10,15 @@
             </div>
         </div>
     </div>
-    
 
+    <div id="fotoLabel" class="fab fab-extended fab-right-bottom">
+        <input id="btnImg" type="file" accept="image/*" hidden>
+        <a href="#">
+            <span style="font-size: 2em;">
+                <i class="fas fa-camera"></i>
+            </span>
+        </a>
+    </div>
     <!-- page-content has additional login-screen content -->
     <div class="page-content login-screen-content">
         <div class="login-screen-title">Anwin</div>
@@ -45,7 +52,8 @@
             <div class="list">
                 <ul>
                     <li>
-                        <a href="#" id="btnWijzigenWachtwoord" class="col button button-large button-raised button-fill">Wijzigen</a>
+                        <a href="#" id="btnWijzigenWachtwoord"
+                            class="col button button-large button-raised button-fill">Wijzigen wachtwoord</a>
                     </li>
                 </ul>
             </div>
@@ -72,12 +80,22 @@
             <div class="list">
                 <ul>
                     <li>
-                        <a href="#" id="wijzigNaamVoornaam" class="col button button-large button-raised button-fill">Wijzigen</a>
+                        <a href="#" id="wijzigNaamVoornaam"
+                            class="col button button-large button-raised button-fill">Wijzigen naam</a>
                     </li>
                 </ul>
             </div>
 
         </form>
-       
+        <div id="uploadenFoto" style="display: none;" class="list">
+            <ul>
+                <li>
+                    <a href="#" id="wijzigNaamVoornaam"
+                        class="col button button-large button-raised button-fill">Uploaden foto</a>
+                </li>
+            </ul>
+        </div>
+        
+
     </div>
 </div>

@@ -1,5 +1,5 @@
 /**
- * Framework7 5.4.5
+ * Framework7 5.7.1
  * Full featured mobile HTML framework for building iOS & Android apps
  * https://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: February 21, 2020
+ * Released on: May 1, 2020
  */
 
 (function (global, factory) {
@@ -2826,6 +2826,7 @@
       cordova: !!(win.cordova || win.phonegap),
       phonegap: !!(win.cordova || win.phonegap),
       electron: false,
+      nwjs: false,
     };
 
     var screenWidth = win.screen.width;
@@ -2840,6 +2841,7 @@
     var firefox = ua.indexOf('Gecko/') >= 0 && ua.indexOf('Firefox/') >= 0;
     var windows = platform === 'Win32';
     var electron = ua.toLowerCase().indexOf('electron') >= 0;
+    var nwjs = typeof nw !== 'undefined' && typeof process !== 'undefined' && typeof process.versions !== 'undefined' && typeof process.versions.nw !== 'undefined';
     var macos = platform === 'MacIntel';
 
     // iPadOs 13 fix
@@ -2899,9 +2901,10 @@
     device.standalone = device.webView;
 
     // Desktop
-    device.desktop = !(device.ios || device.android) || electron;
+    device.desktop = !(device.ios || device.android) || electron || nwjs;
     if (device.desktop) {
       device.electron = electron;
+      device.nwjs = nwjs;
       device.macos = macos;
       device.windows = windows;
       if (device.macos) {
@@ -3188,7 +3191,7 @@
     if ( parameters === void 0 ) parameters = {};
 
     var defaultSelector = parameters.defaultSelector;
-    var constructor = parameters.constructor;
+    var Constructor = parameters.constructor;
     var domProp = parameters.domProp;
     var app = parameters.app;
     var addMethods = parameters.addMethods;
@@ -3197,13 +3200,13 @@
         var args = [], len = arguments.length;
         while ( len-- ) args[ len ] = arguments[ len ];
 
-        if (app) { return new (Function.prototype.bind.apply( constructor, [ null ].concat( [app], args) )); }
-        return new (Function.prototype.bind.apply( constructor, [ null ].concat( args) ));
+        if (app) { return new (Function.prototype.bind.apply( Constructor, [ null ].concat( [app], args) )); }
+        return new (Function.prototype.bind.apply( Constructor, [ null ].concat( args) ));
       },
       get: function get(el) {
         if ( el === void 0 ) el = defaultSelector;
 
-        if (el instanceof constructor) { return el; }
+        if (el instanceof Constructor) { return el; }
         var $el = $(el);
         if ($el.length === 0) { return undefined; }
         return $el[0][domProp];
@@ -3234,30 +3237,66 @@
     if ( parameters === void 0 ) parameters = {};
 
     var defaultSelector = parameters.defaultSelector;
-    var constructor = parameters.constructor;
+    var Constructor = parameters.constructor;
     var app = parameters.app;
     var methods = Utils.extend(
       ConstructorMethods({
         defaultSelector: defaultSelector,
-        constructor: constructor,
+        constructor: Constructor,
         app: app,
         domProp: 'f7Modal',
       }),
       {
-        open: function open(el, animate) {
+        open: function open(el, animate, targetEl) {
           var $el = $(el);
+          if ($el.length > 1 && targetEl) {
+            // check if same modal in other page
+            var $targetPage = $(targetEl).parents('.page');
+            if ($targetPage.length) {
+              $el.each(function (index, modalEl) {
+                var $modalEl = $(modalEl);
+                if ($modalEl.parents($targetPage)[0] === $targetPage[0]) {
+                  $el = $modalEl;
+                }
+              });
+            }
+          }
+          if ($el.length > 1) {
+            $el = $el.eq($el.length - 1);
+          }
           if (!$el.length) { return undefined; }
           var instance = $el[0].f7Modal;
-          if (!instance) { instance = new constructor(app, { el: $el }); }
+          if (!instance) {
+            var params = $el.dataset();
+            instance = new Constructor(app, Object.assign({}, {el: $el}, params));
+          }
           return instance.open(animate);
         },
-        close: function close(el, animate) {
+        close: function close(el, animate, targetEl) {
           if ( el === void 0 ) el = defaultSelector;
 
           var $el = $(el);
           if (!$el.length) { return undefined; }
+          if ($el.length > 1) {
+            // check if close link (targetEl) in this modal
+            var $parentEl;
+            if (targetEl) {
+              var $targetEl = $(targetEl);
+              if ($targetEl.length) {
+                $parentEl = $targetEl.parents($el);
+              }
+            }
+            if ($parentEl && $parentEl.length > 0) {
+              $el = $parentEl;
+            } else {
+              $el = $el.eq($el.length - 1);
+            }
+          }
           var instance = $el[0].f7Modal;
-          if (!instance) { instance = new constructor(app, { el: $el }); }
+          if (!instance) {
+            var params = $el.dataset();
+            instance = new Constructor(app, Object.assign({}, {el: $el}, params));
+          }
           return instance.close(animate);
         },
       }
@@ -3505,8 +3544,12 @@
         var html = doc.querySelector('html');
         if (media === DARK) {
           html.classList.add('theme-dark');
+          app.darkTheme = true;
+          app.emit('darkThemeChange', true);
         } else if (media === LIGHT) {
           html.classList.remove('theme-dark');
+          app.darkTheme = false;
+          app.emit('darkThemeChange', false);
         }
       };
 
@@ -3565,8 +3608,12 @@
       }
       if (app.mq.dark && app.mq.dark.matches) {
         html.classList.add('theme-dark');
+        app.darkTheme = true;
+        app.emit('darkThemeChange', true);
       } else if (app.mq.light && app.mq.light.matches) {
         html.classList.remove('theme-dark');
+        app.darkTheme = false;
+        app.emit('darkThemeChange', false);
       }
     };
 
@@ -3582,7 +3629,7 @@
       app.router.componentLoader(
         app.params.component,
         app.params.componentUrl,
-        { componentOptions: { el: app.root[0] } },
+        { componentOptions: { el: app.root[0], root: true } },
         function (el) {
           app.root = $(el);
           app.root[0].f7 = app;
@@ -5261,12 +5308,22 @@
     function animatableNavElements() {
       var els = [];
       var inverter = app.rtl ? -1 : 1;
+      var currentNavIsTransparent = $currentNavbarEl.hasClass('navbar-transparent') && !$currentNavbarEl.hasClass('navbar-large') && !$currentNavbarEl.hasClass('navbar-transparent-visible');
       var currentNavIsLarge = $currentNavbarEl.hasClass('navbar-large');
       var currentNavIsCollapsed = $currentNavbarEl.hasClass('navbar-large-collapsed');
-      var currentNavIsTransparent = $currentNavbarEl.hasClass('navbar-large-transparent');
+      var currentNavIsLargeTransparent = $currentNavbarEl.hasClass('navbar-large-transparent')
+        || (
+          $currentNavbarEl.hasClass('navbar-large')
+          && $currentNavbarEl.hasClass('navbar-transparent')
+        );
+      var previousNavIsTransparent = $previousNavbarEl.hasClass('navbar-transparent') && !$previousNavbarEl.hasClass('navbar-large') && !$previousNavbarEl.hasClass('navbar-transparent-visible');
       var previousNavIsLarge = $previousNavbarEl.hasClass('navbar-large');
       var previousNavIsCollapsed = $previousNavbarEl.hasClass('navbar-large-collapsed');
-      var previousNavIsTransparent = $previousNavbarEl.hasClass('navbar-large-transparent');
+      var previousNavIsLargeTransparent = $previousNavbarEl.hasClass('navbar-large-transparent')
+        || (
+          $previousNavbarEl.hasClass('navbar-large')
+          && $previousNavbarEl.hasClass('navbar-transparent')
+        );
       var fromLarge = currentNavIsLarge && !currentNavIsCollapsed;
       var toLarge = previousNavIsLarge && !previousNavIsCollapsed;
       var $currentNavElements = $currentNavbarEl.find('.left, .title, .right, .subnavbar, .fading, .title-large, .navbar-bg');
@@ -5299,6 +5356,7 @@
           var isLeft = $navEl.hasClass('left');
           var isTitle = $navEl.hasClass('title');
           var isBg = $navEl.hasClass('navbar-bg');
+          if ((isTitle || isBg) && currentNavIsTransparent) { return; }
           if (!fromLarge && $navEl.hasClass('.title-large')) { return; }
           var el = {
             el: navEl,
@@ -5341,7 +5399,7 @@
             if (els.indexOf(el) < 0) { els.push(el); }
             if (!fromLarge && !toLarge) {
               if (currentNavIsCollapsed) {
-                if (currentNavIsTransparent) {
+                if (currentNavIsLargeTransparent) {
                   el.className = 'ios-swipeback-navbar-bg-large';
                 }
                 el.transform = function (progress) { return ("translateX(" + (100 * progress * inverter) + "%) translateY(calc(-1 * var(--f7-navbar-large-title-height)))"); };
@@ -5391,6 +5449,7 @@
           var isLeft = $navEl.hasClass('left');
           var isTitle = $navEl.hasClass('title');
           var isBg = $navEl.hasClass('navbar-bg');
+          if ((isTitle || isBg) && previousNavIsTransparent) { return; }
           var el = {
             el: navEl,
           };
@@ -5416,7 +5475,7 @@
             if (els.indexOf(el) < 0) { els.push(el); }
             if (!fromLarge && !toLarge) {
               if (previousNavIsCollapsed) {
-                if (previousNavIsTransparent) {
+                if (previousNavIsLargeTransparent) {
                   el.className = 'ios-swipeback-navbar-bg-large';
                 }
                 el.transform = function (progress) { return ("translateX(" + ((-100 + 100 * progress) * inverter) + "%) translateY(calc(-1 * var(--f7-navbar-large-title-height)))"); };
@@ -6108,6 +6167,8 @@
         .removeClass('navbar-previous navbar-current navbar-next')
         .addClass(("navbar-" + newPagePosition + (isMaster ? ' navbar-master' : '') + (isDetail ? ' navbar-master-detail' : '') + (isDetailRoot ? ' navbar-master-detail-root' : '')))
         .removeClass('stacked');
+      $newNavbarEl.trigger('navbar:position', { position: newPagePosition });
+      router.emit('navbarPosition', $newNavbarEl[0], newPagePosition);
       if (isMaster || isDetail) {
         router.emit('navbarRole', $newNavbarEl[0], { role: isMaster ? 'master' : 'detail', detailRoot: !!isDetailRoot });
       }
@@ -6615,16 +6676,11 @@
       params = navigateParams.params;
     }
     if (name) {
-      // find route by name
-      route = router.findRouteByKey('name', name);
-      if (!route) {
-        throw new Error(("Framework7: route with name \"" + name + "\" not found"));
-      }
-      url = router.constructRouteUrl(route, { params: params, query: query });
+      url = router.generateUrl({ name: name, params: params, query: query });
       if (url) {
         return router.navigate(url, navigateOptions);
       }
-      throw new Error(("Framework7: can't construct URL for route with name \"" + name + "\""));
+      return router;
     }
     var app = router.app;
     appRouterCheck(router, 'navigate');
@@ -7353,6 +7409,8 @@
         .addClass(("navbar-previous" + (isMaster ? ' navbar-master' : '') + (isDetail ? ' navbar-master-detail' : '') + (isDetailRoot ? ' navbar-master-detail-root' : '')))
         .removeClass('stacked')
         .removeAttr('aria-hidden');
+      $newNavbarEl.trigger('navbar:position', { position: 'previous' });
+      router.emit('navbarPosition', $newNavbarEl[0], 'previous');
       if (isMaster || isDetailRoot) {
         router.emit('navbarRole', $newNavbarEl[0], { role: isMaster ? 'master' : 'detail', detailRoot: !!isDetailRoot });
       }
@@ -7777,12 +7835,7 @@
     var params = navigateOptions.params;
     var query = navigateOptions.query;
     if (name) {
-      // find route by name
-      route = router.findRouteByKey('name', name);
-      if (!route) {
-        throw new Error(("Framework7: route with name \"" + name + "\" not found"));
-      }
-      navigateUrl = router.constructRouteUrl(route, { params: params, query: query });
+      navigateUrl = router.generateUrl({ name: name, params: params, query: query });
       if (navigateUrl) {
         return router.back(navigateUrl, Utils.extend({}, navigateOptions, {
           name: null,
@@ -7790,7 +7843,7 @@
           query: null,
         }));
       }
-      throw new Error(("Framework7: can't construct URL for route with name \"" + name + "\""));
+      return router;
     }
 
     var app = router.app;
@@ -7816,7 +7869,11 @@
       if (modalToClose && modalToClose.$el) {
         var prevOpenedModals = modalToClose.$el.prevAll('.modal-in');
         if (prevOpenedModals.length && prevOpenedModals[0].f7Modal) {
-          previousRoute = prevOpenedModals[0].f7Modal.route;
+          var modalEl = prevOpenedModals[0];
+          // check if current router not inside of the modalEl
+          if (!router.$el.parents(modalEl).length) {
+            previousRoute = modalEl.f7Modal.route;
+          }
         }
       }
       if (!previousRoute) {
@@ -8564,6 +8621,30 @@
         url: url,
         path: path,
       };
+    };
+
+    Router.prototype.generateUrl = function generateUrl (parameters) {
+      if ( parameters === void 0 ) parameters = {};
+
+      if (typeof parameters === 'string') {
+        return parameters;
+      }
+      var name = parameters.name;
+      var params = parameters.params;
+      var query = parameters.query;
+      if (!name) {
+        throw new Error('Framework7: name parameter is required');
+      }
+      var router = this;
+      var route = router.findRouteByKey('name', name);
+      if (!route) {
+        throw new Error(("Framework7: route with name \"" + name + "\" not found"));
+      }
+      var url = router.constructRouteUrl(route, { params: params, query: query });
+      if (!url) {
+        throw new Error(("Framework7: can't construct URL for route with name \"" + name + "\""));
+      }
+      return url;
     };
 
     // eslint-disable-next-line
@@ -9344,6 +9425,144 @@
     },
   };
 
+  function resizableView(view) {
+    var app = view.app;
+    if (view.resizableInitialized) { return; }
+    Utils.extend(view, {
+      resizable: true,
+      resizableWidth: null,
+      resizableInitialized: true,
+    });
+    var $htmlEl = $('html');
+    var $el = view.$el;
+    if (!$el) { return; }
+
+    var $resizeHandlerEl;
+
+    var isTouched;
+    var isMoved;
+    var touchesStart = {};
+    var touchesDiff;
+    var width;
+
+    var minWidth;
+    var maxWidth;
+
+    function transformCSSWidth(v) {
+      if (!v) { return null; }
+      if (v.indexOf('%') >= 0 || v.indexOf('vw') >= 0) {
+        return parseInt(v, 10) / 100 * app.width;
+      }
+      var newV = parseInt(v, 10);
+      if (Number.isNaN(newV)) { return null; }
+      return newV;
+    }
+
+    function isResizable() {
+      return view.resizable && $el.hasClass('view-resizable') && $el.hasClass('view-master-detail');
+    }
+
+    function handleTouchStart(e) {
+      if (!isResizable()) { return; }
+      touchesStart.x = e.type === 'touchstart' ? e.targetTouches[0].pageX : e.pageX;
+      touchesStart.y = e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY;
+      isMoved = false;
+      isTouched = true;
+      var $pageMasterEl = $el.children('.page-master');
+      minWidth = transformCSSWidth($pageMasterEl.css('min-width'));
+      maxWidth = transformCSSWidth($pageMasterEl.css('max-width'));
+    }
+    function handleTouchMove(e) {
+      if (!isTouched) { return; }
+      e.f7PreventSwipePanel = true;
+      var pageX = e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX;
+
+      if (!isMoved) {
+        width = $resizeHandlerEl[0].offsetLeft + $resizeHandlerEl[0].offsetWidth;
+        $el.addClass('view-resizing');
+        $htmlEl.css('cursor', 'col-resize');
+      }
+
+      isMoved = true;
+
+      e.preventDefault();
+
+      touchesDiff = (pageX - touchesStart.x);
+
+      var newWidth = width + touchesDiff;
+      if (minWidth && !Number.isNaN(minWidth)) {
+        newWidth = Math.max(newWidth, minWidth);
+      }
+      if (maxWidth && !Number.isNaN(maxWidth)) {
+        newWidth = Math.min(newWidth, maxWidth);
+      }
+      newWidth = Math.min(Math.max(newWidth, 0), app.width);
+
+      view.resizableWidth = newWidth;
+      $htmlEl[0].style.setProperty('--f7-page-master-width', (newWidth + "px"));
+
+      $el.trigger('view:resize', newWidth);
+      view.emit('local::resize viewResize', view, newWidth);
+    }
+    function handleTouchEnd() {
+      $('html').css('cursor', '');
+      if (!isTouched || !isMoved) {
+        isTouched = false;
+        isMoved = false;
+        return;
+      }
+      isTouched = false;
+      isMoved = false;
+
+      $htmlEl[0].style.setProperty('--f7-page-master-width', ((view.resizableWidth) + "px"));
+      $el.removeClass('view-resizing');
+    }
+
+    function handleResize() {
+      if (!view.resizableWidth) { return; }
+      minWidth = transformCSSWidth($resizeHandlerEl.css('min-width'));
+      maxWidth = transformCSSWidth($resizeHandlerEl.css('max-width'));
+
+      if (minWidth && !Number.isNaN(minWidth) && view.resizableWidth < minWidth) {
+        view.resizableWidth = Math.max(view.resizableWidth, minWidth);
+      }
+      if (maxWidth && !Number.isNaN(maxWidth) && view.resizableWidth > maxWidth) {
+        view.resizableWidth = Math.min(view.resizableWidth, maxWidth);
+      }
+      view.resizableWidth = Math.min(Math.max(view.resizableWidth, 0), app.width);
+
+      $htmlEl[0].style.setProperty('--f7-page-master-width', ((view.resizableWidth) + "px"));
+    }
+
+    $resizeHandlerEl = view.$el.children('.view-resize-handler');
+    if (!$resizeHandlerEl.length) {
+      view.$el.append('<div class="view-resize-handler"></div>');
+      $resizeHandlerEl = view.$el.children('.view-resize-handler');
+    }
+    view.$resizeHandlerEl = $resizeHandlerEl;
+
+    $el.addClass('view-resizable');
+
+    // Add Events
+    var passive = Support.passiveListener ? { passive: true } : false;
+
+    view.$el.on(app.touchEvents.start, '.view-resize-handler', handleTouchStart, passive);
+    app.on('touchmove:active', handleTouchMove);
+    app.on('touchend:passive', handleTouchEnd);
+    app.on('resize', handleResize);
+    view.on('beforeOpen', handleResize);
+
+    view.once('viewDestroy', function () {
+      $el.removeClass('view-resizable');
+      view.$resizeHandlerEl.remove();
+      view.$el.off(app.touchEvents.start, '.view-resize-handler', handleTouchStart, passive);
+      app.off('touchmove:active', handleTouchMove);
+      app.off('touchend:passive', handleTouchEnd);
+      app.off('resize', handleResize);
+      view.off('beforeOpen', handleResize);
+    });
+  }
+
   var View = /*@__PURE__*/(function (Framework7Class) {
     function View(appInstance, el, viewParams) {
       if ( viewParams === void 0 ) viewParams = {};
@@ -9516,6 +9735,9 @@
       var app = view.app;
       view.checkMasterDetailBreakpoint = view.checkMasterDetailBreakpoint.bind(view);
       view.checkMasterDetailBreakpoint();
+      if (view.params.masterDetailResizable) {
+        resizableView(view);
+      }
       app.on('resize', view.checkMasterDetailBreakpoint);
     };
 
@@ -9763,6 +9985,9 @@
           if (options.componentOptions && options.componentOptions.el) {
             componentOptions.el = options.componentOptions.el;
           }
+          if (options.componentOptions && options.componentOptions.root) {
+            componentOptions.root = options.componentOptions.root;
+          }
           app.component.create(componentOptions, extendContext)
             .then(function (createdComponent) {
               resolve(createdComponent.el);
@@ -9900,8 +10125,8 @@
   /* eslint no-use-before-define: "off" */
 
   var selfClosing = 'area base br col command embed hr img input keygen link menuitem meta param source track wbr'.split(' ');
-  var propsAttrs = 'hidden checked disabled readonly selected autocomplete autofocus autoplay required multiple value indeterminate'.split(' ');
-  var booleanProps = 'hidden checked disabled readonly selected autocomplete autofocus autoplay required multiple readOnly indeterminate'.split(' ');
+  var propsAttrs = 'hidden checked disabled readonly selected autofocus autoplay required multiple value indeterminate'.split(' ');
+  var booleanProps = 'hidden checked disabled readonly selected autofocus autoplay required multiple readOnly indeterminate'.split(' ');
   var tempDomDIV = doc.createElement('div');
   var tempDomTBODY;
   var tempDomTROW;
@@ -10946,6 +11171,7 @@
         $id: options.isClassComponent ? self.constructor.id : (options.id || id),
         $mixins: options.isClassComponent ? self.constructor.mixins : options.mixins,
         $children: children || [],
+        $isRootComponent: !!options.root,
       }
     );
     var $options = self.$options;
@@ -10984,7 +11210,16 @@
       enumerable: true,
       configurable: true,
       get: function get() {
-        if (app.rootComponent) { return app.rootComponent; }
+        if (self.$isRootComponent) {
+          return self;
+        }
+        if (app.rootComponent) {
+          if (!self.$onRootUpdated) {
+            self.$onRootUpdated = function () { return self.$update(); };
+            app.on('rootComponentUpdated', self.$onRootUpdated);
+          }
+          return app.rootComponent;
+        }
         var root = Utils.merge({}, app.data, app.methods);
         if (win && win.Proxy) {
           root = new win.Proxy(root, {
@@ -11227,6 +11462,9 @@
       function resolver() {
         resolve();
         if (callback) { callback(); }
+        if (self.$isRootComponent) {
+          self.$f7.emit('rootComponentUpdated');
+        }
       }
       self.__updateIsPending = true;
       self.__updateQueue.push(resolver);
@@ -11267,6 +11505,11 @@
     self.$hook('beforeDestroy');
 
     if (self.$styleEl) { $(self.$styleEl).remove(); }
+    if (self.$onRootUpdated) {
+      self.$f7.off('rootComponentUpdated', self.$onRootUpdated);
+      delete self.$onRootUpdated;
+    }
+
     self.$detachEvents();
     self.$hook('destroyed');
     // Delete component instance
@@ -11722,6 +11965,9 @@
     if ($viewsEl.length === 0) { $viewsEl = app.root; }
     // Find active view as tab
     var $viewEl = $viewsEl.children('.view');
+    if ($viewEl.length === 0) {
+      $viewEl = $viewsEl.children('.tabs').children('.view');
+    }
     // Propably in tabs or split view
     if ($viewEl.length > 1) {
       if ($viewEl.hasClass('tab')) {
@@ -11760,6 +12006,7 @@
         reloadPages: false,
         reloadDetail: false,
         masterDetailBreakpoint: 0,
+        masterDetailResizable: false,
         removeElements: true,
         removeElementsWithTimeout: false,
         removeElementsTimeout: 0,
@@ -11891,8 +12138,11 @@
         return;
       }
 
+      var $innerEl = $el.children('.navbar-inner');
+      if (!$innerEl.length) { return; }
+
       var needCenterTitle = (
-        $el.children('.navbar-inner').hasClass('navbar-inner-centered-title')
+        $innerEl.hasClass('navbar-inner-centered-title')
         || app.params.navbar[((app.theme) + "CenterTitle")]
       );
       var needLeftTitle = app.theme === 'ios' && !app.params.navbar[((app.theme) + "CenterTitle")];
@@ -11909,14 +12159,13 @@
       }
 
       if (app.theme !== 'ios' && app.params.navbar[((app.theme) + "CenterTitle")]) {
-        $el.children('.navbar-inner').addClass('navbar-inner-centered-title');
+        $innerEl.addClass('navbar-inner-centered-title');
       }
       if (app.theme === 'ios' && !app.params.navbar.iosCenterTitle) {
-        $el.children('.navbar-inner').addClass('navbar-inner-left-title');
+        $innerEl.addClass('navbar-inner-left-title');
       }
 
       var $viewEl = $el.parents('.view').eq(0);
-      var $innerEl = $el.children('.navbar-inner');
       var left = app.rtl ? $innerEl.children('.right') : $innerEl.children('.left');
       var right = app.rtl ? $innerEl.children('.left') : $innerEl.children('.right');
       var title = $innerEl.children('.title');
@@ -12174,7 +12423,7 @@
         app.navbar.collapseLargeTitle($navbarEl);
       }
     },
-    initNavbarOnScroll: function initNavbarOnScroll(pageEl, navbarEl, needHide, needCollapse) {
+    initNavbarOnScroll: function initNavbarOnScroll(pageEl, navbarEl, needHide, needCollapse, needTransparent) {
       var app = this;
       var $pageEl = $(pageEl);
       var $navbarEl = $(navbarEl);
@@ -12182,6 +12431,7 @@
       var isLarge = $titleLargeEl.length || $navbarEl.hasClass('.navbar-large');
       var navbarHideHeight = 44;
       var snapPageScrollToLargeTitle = app.params.navbar.snapPageScrollToLargeTitle;
+      var snapPageScrollToTransparentNavbar = app.params.navbar.snapPageScrollToTransparentNavbar;
 
       var previousScrollTop;
       var currentScrollTop;
@@ -12194,6 +12444,9 @@
 
       var navbarCollapsed;
       var navbarTitleLargeHeight;
+
+      var navbarOffsetHeight;
+
       if (needCollapse || (needHide && isLarge)) {
         navbarTitleLargeHeight = $navbarEl.css('--f7-navbar-large-title-height');
 
@@ -12237,15 +12490,83 @@
         }
       }
 
+      function snapTransparentNavbar() {
+        var inSearchbarExpanded = $navbarEl.hasClass('with-searchbar-expandable-enabled');
+        if (inSearchbarExpanded) { return; }
+        if (!scrollContent || currentScrollTop < 0) { return; }
+        if (currentScrollTop >= navbarOffsetHeight / 2 && currentScrollTop < navbarOffsetHeight) {
+          $(scrollContent).scrollTop(navbarOffsetHeight, 100);
+        } else if (currentScrollTop < navbarOffsetHeight) {
+          $(scrollContent).scrollTop(0, 200);
+        }
+      }
+
+      function handleNavbarTransparent() {
+        var isHidden = $navbarEl.hasClass('navbar-hidden') || $navbarEl.parent('.navbars').hasClass('navbar-hidden');
+        var inSearchbarExpanded = $navbarEl.hasClass('with-searchbar-expandable-enabled');
+        if (inSearchbarExpanded || isHidden) { return; }
+        if (!navbarOffsetHeight) {
+          navbarOffsetHeight = navbarEl.offsetHeight;
+        }
+        var opacity = currentScrollTop / navbarOffsetHeight;
+        var notTransparent = $navbarEl.hasClass('navbar-transparent-visible');
+        opacity = Math.max(Math.min(opacity, 1), 0);
+
+        if ((notTransparent && opacity === 1) || (!notTransparent && opacity === 0)) {
+          $navbarEl.find('.navbar-bg, .title').css('opacity', '');
+          return;
+        }
+        if (notTransparent && opacity === 0) {
+          $navbarEl.trigger('navbar:transparenthide');
+          app.emit('navbarTransparentHide', $navbarEl[0]);
+          $navbarEl.removeClass('navbar-transparent-visible');
+          $navbarEl.find('.navbar-bg, .title').css('opacity', '');
+          return;
+        }
+        if (!notTransparent && opacity === 1) {
+          $navbarEl.trigger('navbar:transparentshow');
+          app.emit('navbarTransparentShow', $navbarEl[0]);
+          $navbarEl.addClass('navbar-transparent-visible');
+          $navbarEl.find('.navbar-bg, .title').css('opacity', '');
+          return;
+        }
+
+        $navbarEl.find('.navbar-bg, .title').css('opacity', opacity);
+
+        if (snapPageScrollToTransparentNavbar) {
+          if (!Support.touch) {
+            clearTimeout(scrollTimeoutId);
+            scrollTimeoutId = setTimeout(function () {
+              snapTransparentNavbar();
+            }, desktopSnapTimeout);
+          } else if (touchEndTimeoutId) {
+            clearTimeout(touchEndTimeoutId);
+            touchEndTimeoutId = null;
+            touchEndTimeoutId = setTimeout(function () {
+              snapTransparentNavbar();
+              clearTimeout(touchEndTimeoutId);
+              touchEndTimeoutId = null;
+            }, touchSnapTimeout);
+          }
+        }
+      }
+
+      var previousCollapseProgress = null;
+      var collapseProgress = null;
       function handleLargeNavbarCollapse() {
         var isHidden = $navbarEl.hasClass('navbar-hidden') || $navbarEl.parent('.navbars').hasClass('navbar-hidden');
         if (isHidden) { return; }
-        var isLargeTransparent = $navbarEl.hasClass('navbar-large-transparent');
-        var collapseProgress = Math.min(Math.max((currentScrollTop / navbarTitleLargeHeight), 0), 1);
+        var isLargeTransparent = $navbarEl.hasClass('navbar-large-transparent')
+          || (
+            $navbarEl.hasClass('navbar-large')
+            && $navbarEl.hasClass('navbar-transparent')
+          );
+        previousCollapseProgress = collapseProgress;
+        collapseProgress = Math.min(Math.max((currentScrollTop / navbarTitleLargeHeight), 0), 1);
+        var previousCollapseWasInMiddle = previousCollapseProgress > 0 && previousCollapseProgress < 1;
         var inSearchbarExpanded = $navbarEl.hasClass('with-searchbar-expandable-enabled');
         if (inSearchbarExpanded) { return; }
         navbarCollapsed = $navbarEl.hasClass('navbar-large-collapsed');
-
         if (collapseProgress === 0 && navbarCollapsed) {
           app.navbar.expandLargeTitle($navbarEl[0]);
         } else if (collapseProgress === 1 && !navbarCollapsed) {
@@ -12253,8 +12574,9 @@
         }
         if (
           (collapseProgress === 0 && navbarCollapsed)
+          || (collapseProgress === 0 && previousCollapseWasInMiddle)
           || (collapseProgress === 1 && !navbarCollapsed)
-          // || ((collapseProgress === 1 && navbarCollapsed) || (collapseProgress === 0 && !navbarCollapsed))
+          || (collapseProgress === 1 && previousCollapseWasInMiddle)
         ) {
           if (app.theme === 'md') {
             $navbarEl.find('.navbar-inner').css('overflow', '');
@@ -12298,6 +12620,7 @@
       }
 
       function handleTitleHideShow() {
+        if ($pageEl.hasClass('page-with-card-opened')) { return; }
         scrollHeight = scrollContent.scrollHeight;
         offsetHeight = scrollContent.offsetHeight;
         reachEnd = currentScrollTop + offsetHeight >= scrollHeight;
@@ -12335,9 +12658,10 @@
         }
         currentScrollTop = scrollContent.scrollTop;
         scrollChanged = currentScrollTop;
-
         if (needCollapse) {
           handleLargeNavbarCollapse();
+        } else if (needTransparent) {
+          handleNavbarTransparent();
         }
         if ($pageEl.hasClass('page-previous')) { return; }
         if (needHide) {
@@ -12352,14 +12676,18 @@
         touchEndTimeoutId = null;
         touchEndTimeoutId = setTimeout(function () {
           if (scrollChanged !== false) {
-            snapLargeNavbar();
+            if (needTransparent && !needCollapse) {
+              snapTransparentNavbar();
+            } else {
+              snapLargeNavbar();
+            }
             clearTimeout(touchEndTimeoutId);
             touchEndTimeoutId = null;
           }
         }, touchSnapTimeout);
       }
       $pageEl.on('scroll', '.page-content', handleScroll, true);
-      if (Support.touch && needCollapse && snapPageScrollToLargeTitle) {
+      if (Support.touch && ((needCollapse && snapPageScrollToLargeTitle) || (needTransparent && snapPageScrollToTransparentNavbar))) {
         app.on('touchstart:passive', handeTouchStart);
         app.on('touchend:passive', handleTouchEnd);
       }
@@ -12367,11 +12695,15 @@
         $pageEl.find('.page-content').each(function (pageContentIndex, pageContentEl) {
           if (pageContentEl.scrollTop > 0) { handleScroll.call(pageContentEl); }
         });
+      } else if (needTransparent) {
+        $pageEl.find('.page-content').each(function (pageContentIndex, pageContentEl) {
+          if (pageContentEl.scrollTop > 0) { handleScroll.call(pageContentEl); }
+        });
       }
       $pageEl[0].f7DetachNavbarScrollHandlers = function f7DetachNavbarScrollHandlers() {
         delete $pageEl[0].f7DetachNavbarScrollHandlers;
         $pageEl.off('scroll', '.page-content', handleScroll, true);
-        if (Support.touch && needCollapse && snapPageScrollToLargeTitle) {
+        if (Support.touch && ((needCollapse && snapPageScrollToLargeTitle) || (needTransparent && snapPageScrollToTransparentNavbar))) {
           app.off('touchstart:passive', handeTouchStart);
           app.off('touchend:passive', handleTouchEnd);
         }
@@ -12407,10 +12739,11 @@
         showOnPageScrollTop: true,
         collapseLargeTitleOnScroll: true,
         snapPageScrollToLargeTitle: true,
+        snapPageScrollToTransparentNavbar: true,
       },
     },
     on: {
-      'panelBreakpoint panelCollapsedBreakpoint panelResize resize viewMasterDetailBreakpoint': function onPanelResize() {
+      'panelBreakpoint panelCollapsedBreakpoint panelResize viewResize resize viewMasterDetailBreakpoint': function onPanelResize() {
         var app = this;
         $('.navbar').each(function (index, navbarEl) {
           app.navbar.size(navbarEl);
@@ -12463,6 +12796,12 @@
           page.$el.addClass('page-with-navbar-large');
         }
 
+        // Need transparent on scroll
+        var needTransparentOnScroll;
+        if (!needCollapseOnScrollHandler && $navbarEl.hasClass('navbar-transparent')) {
+          needTransparentOnScroll = true;
+        }
+
         // Need Hide On Scroll
         var needHideOnScrollHandler;
         if (
@@ -12484,8 +12823,8 @@
           }
         }
 
-        if (needCollapseOnScrollHandler || needHideOnScrollHandler) {
-          app.navbar.initNavbarOnScroll(page.el, $navbarEl[0], needHideOnScrollHandler, needCollapseOnScrollHandler);
+        if (needCollapseOnScrollHandler || needHideOnScrollHandler || needTransparentOnScroll) {
+          app.navbar.initNavbarOnScroll(page.el, $navbarEl[0], needHideOnScrollHandler, needCollapseOnScrollHandler, needTransparentOnScroll);
         }
       },
       'panelOpen panelSwipeOpen modalOpen': function onPanelModalOpen(instance) {
@@ -12630,7 +12969,7 @@
       $el.trigger('toolbar:show');
       app.emit('toolbarShow', $el[0]);
     },
-    initHideToolbarOnScroll: function initHideToolbarOnScroll(pageEl) {
+    initToolbarOnScroll: function initToolbarOnScroll(pageEl) {
       var app = this;
       var $pageEl = $(pageEl);
       var $toolbarEl = $pageEl.parents('.view').children('.toolbar');
@@ -12653,11 +12992,12 @@
       var action;
       var toolbarHidden;
       function handleScroll(e) {
+        if ($pageEl.hasClass('page-with-card-opened')) { return; }
+        if ($pageEl.hasClass('page-previous')) { return; }
         var scrollContent = this;
         if (e && e.target && e.target !== scrollContent) {
           return;
         }
-        if ($pageEl.hasClass('page-previous')) { return; }
         currentScrollTop = scrollContent.scrollTop;
         scrollHeight = scrollContent.scrollHeight;
         offsetHeight = scrollContent.offsetHeight;
@@ -12703,7 +13043,7 @@
           hide: Toolbar.hide.bind(app),
           show: Toolbar.show.bind(app),
           setHighlight: Toolbar.setHighlight.bind(app),
-          initHideToolbarOnScroll: Toolbar.initHideToolbarOnScroll.bind(app),
+          initToolbarOnScroll: Toolbar.initToolbarOnScroll.bind(app),
           init: Toolbar.init.bind(app),
         },
       });
@@ -12759,7 +13099,7 @@
           ) {
             return;
           }
-          app.toolbar.initHideToolbarOnScroll(page.el);
+          app.toolbar.initToolbarOnScroll(page.el);
         }
       },
       init: function init() {

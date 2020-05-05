@@ -1,0 +1,36 @@
+{
+  "cwd": "/Users/dimakunitski/Documents/test3",
+  "type": [
+    "web",
+    "cordova"
+  ],
+  "name": "anwin",
+  "framework": "core",
+  "template": "blank",
+  "bundler": false,
+  "cssPreProcessor": false,
+  "theming": {
+    "customColor": false,
+    "color": "#007aff",
+    "darkTheme": false,
+    "iconFonts": true,
+    "fillBars": false
+  },
+  "customBuild": false,
+  "pkg": "com.example.anwin",
+  "cordova": {
+    "folder": "cordova",
+    "platforms": [
+      "ios"
+    ],
+    "plugins": [
+      "cordova-plugin-statusbar",
+      "cordova-plugin-keyboard",
+      "cordova-plugin-splashscreen",
+      "cordova-plugin-wkwebview-engine",
+      "cordova-plugin-inappbrowser",
+      "cordova-plugin-safariviewcontroller",
+      "cordova-plugin-file"
+    ]
+  }
+}

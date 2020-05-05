@@ -13,6 +13,9 @@ firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 firebase.auth();
 firebase.storage();
+firebase.firestore().settings({
+  experimentalForceLongPolling: true
+});
 var ui = new firebaseui.auth.AuthUI(firebase.auth());
 var uiConfig = {
   callbacks: {
@@ -169,6 +172,7 @@ var app = new Framework7({
       on: {
         pageInit: function (event, page) {
           lijstenVanDeKlanten();
+
           var swipeToClosePopup = app.popup.create({
             el: '.demo-popup-swipe-handler',
             swipeToClose: true,
@@ -202,7 +206,6 @@ var app = new Framework7({
             swipeToClose: true,
             backdrop: true,
           });
-          // saveMessage();
 
 
 
@@ -316,20 +319,6 @@ var app = new Framework7({
       }
     },
     {
-      path: '/medewerkerRegistratiePagina/',
-      url: 'medewerkerRegistratiePagina.html',
-      options: {
-        transition: 'f7-flip',
-      },
-      on: {
-        pageInit: function (event, page) {
-
-          bewaarMedewerker();
-        },
-
-      }
-    },
-    {
       path: '/wijzigMedewerkerGegevens/',
       url: 'wijzigMedewerkerGegevens.html',
       options: {
@@ -337,8 +326,72 @@ var app = new Framework7({
       },
       on: {
         pageInit: function (event, page) {
+          var file = "";
           wijzigWachtwoord();
           wijzigNaamVoornaam();
+          $$('#fotoLabel').on('click', function () {
+            document.getElementById('btnImg').click();
+            $$('#FormLabelVerder').hide();
+            $$('#FormLabelRegistreren').hide();
+            $$('#fotoLabel').hide();
+            $$('#uploadenFoto').show();
+
+
+
+          });
+          $$('#uploadenFoto').on('click', function () {
+            file = document.getElementById("btnImg").files[0];
+            if (document.getElementById("btnImg").files.length == 0) {
+              app.dialog.alert('Selecteer een foto!');
+              return;
+
+            }
+            else {
+              fotoRef = storageRef.child(file.name);
+              fotoRef.put(file).then(function (snapshot) {
+
+              }).then(function () {
+                var user = firebase.auth().currentUser;
+                fotoRef.getDownloadURL().then(function (url) {
+                  user.updateProfile({
+                    photoURL: url
+
+                  }).then(function () {
+
+
+                  }).catch(function (error) {
+                    app.dialog.alert(error);
+                  });
+                  firebase.firestore().collection("medewerker").doc(user.uid).set({
+                    name: user.displayName,
+                    email: user.email,
+                    photoUrl: url,
+                    uid: user.uid
+                  })
+                    .then(function () {
+                      console.log("Document successfully written!");
+                      view.router.navigate('/medewerkerpagina/', { transition: 'f7-circle' });
+
+                    })
+                    .catch(function (error) {
+                      app.dialog.alert(error);
+                    });
+                }).catch(function (error) {
+                  // Handle any errors
+                });
+
+              }).catch(function (error) {
+                app.dialog.alert(error);
+              });
+
+            }
+
+
+          });
+
+
+
+
 
 
         },
@@ -673,12 +726,12 @@ function getRegistApi() {
       var user = firebase.auth().currentUser;
       user.updateProfile({
         displayName: document.getElementById('naamVoornaam').value,
+        photoURL: 'https://firebasestorage.googleapis.com/v0/b/anwin-fa985.appspot.com/o/avatar.png?alt=media&token=5801b53c-a777-42dc-bddf-8a51809a631c'
 
       }).then(function () {
 
-        $$('#FormLabelNaamVoornaam').hide();
-        $$('#fotoLabel').css('display', 'block');
-        $$('#verderNaarRegestreren').css('display', 'block');
+        //$$('#FormLabelNaamVoornaam').hide();
+        $$('#labelRegistreren').css('display', 'block');
 
       }).catch(function (error) {
         app.dialog.alert(error);
@@ -689,33 +742,49 @@ function getRegistApi() {
 
 
   });
-  $$('#fotoLabel').on('click', function () {
-    document.getElementById('btnImg').click();
-
-
-
-  });
-  $$('#verderNaarRegestreren').on('click', function () {
-    file = document.getElementById("btnImg").files[0];
-    if (document.getElementById("btnImg").files.length == 0) {
-      app.dialog.alert('Selecteer een foto!');
-      return;
-
-    }
-    else {
-      fileNaam = file.name;
-      fotoRef = storageRef.child(file.name);
-      fotoRef.put(file).then(function (snapshot) {
-
-
-      }).catch(function (error) {
+  $$('#labelRegistreren').on('click', function () {
+    var user = firebase.auth().currentUser;
+    firebase.firestore().collection("medewerker").doc(user.uid).set({
+      name: user.displayName,
+      email: user.email,
+      photoUrl: user.photoURL,
+      uid: user.uid
+    })
+      .then(function () {
+        console.log("Document successfully written!");
+        notificationLoginEnRegistrerenMedewerker.open();
+      })
+      .catch(function (error) {
         app.dialog.alert(error);
       });
-      view.router.navigate('/medewerkerRegistratiePagina/', { transition: 'f7-circle' });
-
-    }
 
   });
+  /* $$('#fotoLabel').on('click', function () {
+     document.getElementById('btnImg').click();
+ 
+ 
+ 
+   });
+   $$('#verderNaarRegestreren').on('click', function () {
+     file = document.getElementById("btnImg").files[0];
+     if (document.getElementById("btnImg").files.length == 0) {
+       app.dialog.alert('Selecteer een foto!');
+       return;
+ 
+     }
+     else {
+       fileNaam = file.name;
+       fotoRef = storageRef.child(file.name);
+       fotoRef.put(file).then(function (snapshot) {
+ 
+ 
+       }).catch(function (error) {
+         app.dialog.alert(error);
+       });
+ 
+     }
+ 
+   });*/
 
 }
 function wijzigWachtwoord() {
@@ -774,9 +843,7 @@ function wijzigNaamVoornaam() {
 function bewaarMedewerker() {
   var line = "";
   var line2 = "";
-  var linkFoto = "";
-  app.dialog.alert(displayNaam);
-  app.dialog.alert(fileNaam);
+
   var fotoRef = storageRef.child(fileNaam);
 
   $$('#btnRegistrerenMedewerker').on('click', function () {
@@ -1555,6 +1622,7 @@ function loadKlantGgegevens() {
 function onzeMedewerkerGegevens() {
   let line = "";
   var mede_id = "";
+
   firebase.firestore().collection("medewerker").get().then(function (querySnapshot) {
     querySnapshot.forEach(function (doc) {
       line += '<li class="medeList"  value="' + doc.id + '"><a href="#" data-sheet=".my-sheet-swipe-to-close1" class="item-link item-content sheet-open"><div class="item-media"><img src="' + doc.data().photoUrl + '" width="80" height="80"/></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' + doc.data().name + '</div></div><div class="item-subtitle"></div></div></a></li>';
@@ -1588,9 +1656,33 @@ function onzeMedewerkerGegevens() {
 
 
     });
+
+
   });
 
+  /*firebase.firestore().collection("medewerker").get().then(function (querySnapshot) {
+    querySnapshot.forEach(function (doc) {
+      line += '<li class="medeList"  value="' + doc.id + '"><div data-popup=".popup-chat" class="item-content popup-open"><div class="item-media"><img src="' + doc.data().photoUrl + '" width="70" height="70" style="border-radius: 50%;"/></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' + doc.data().name + '</div></div><div class="item-subtitle"></div></div></div></li>';
+      //line += '<li class="accordion-item"><a href="#" class="item-content item-link list-button"><div class="item-media"> <img src="' + doc.data().photoUrl + '"style="width: 100px; height: 100px; border-radius: 50%"></div><div class="item-inner"><div class="item-title">' + doc.data().name + '</div></div></a><div class="accordion-item-content">Some info</div></li>';
+    });
+    $$('#medewerkersGegevens').html(line);
+
+    $$('.medeList').on('click', function () {
+      mede_id = $$(this).attr('value');
+      sessionStorage.setItem('medewerker_id', mede_id);
+
+    });
+    $$('.popup-chat').on('popup:opened', function (e) {
+
+      loadMessages();
+
+    });
+
+
+  });*/
 }
+
+
 
 // functies om van een ingelogde gebruiker gegevens te krijgen.
 function getUserName() {
@@ -1690,11 +1782,11 @@ function loadMessages() {
 
         if (message.uidUser == uidKlant) {
 
-          line += '<div class="message message-sent"><div class="message-content"><div class="message-header">' + message.naamKlant + '</div><div class="message-bubble"><div class="message-text">' + message.text + '</div></div></div></div>';
+          line += '<div class="message message-sent"><img style="border-radius: 50%;" width="20" height="20" src="' + message.photoKlant + '"><div class="message-content"><div class="message-bubble"><div class="message-text">' + message.text + '</div></div></div></div>';
 
         }
         else if (message.uidUser == uidMedewerker) {
-          line += '<div class="message message-received"><div class="message-content"><div class="message-header">' + message.naamMedewerker + '</div><div class="message-bubble"><div class="message-text">' + message.text + '</div></div></div></div>';
+          line += '<div class="message message-received"><img style="border-radius: 50%;" width="20" height="20" src="' + message.photoMedewerker + '"><div class="message-content"><div class="message-bubble"><div class="message-text">' + message.text + '</div></div></div></div>';
 
 
         }
@@ -1744,7 +1836,26 @@ function lijstenVanDeKlanten() {
     });
 
   });
+  /*firebase.firestore().collection("klant").get().then(function (querySnapshot) {
+    querySnapshot.forEach(function (doc) {
+      //line += '<li class="klantList"  value="' + doc.id + '"><a href="#" class="item-link item-content" data-sheet=".my-sheet-swipe-to-close2"><div class="item-media"><img src="' + doc.data().photoUrl + '" width="80" height="80"/></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' + doc.data().name + '</div></div><div class="item-subtitle">Meer ...</div></div></a></li>';
+      line += '<li class="klantList"  value="' + doc.id + '"><div data-popup=".popup-chat" class="item-content popup-open"><div class="item-media"><img src="' + doc.data().photoUrl + '" style="border-radius: 50%;" width="80" height="80"/></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' + doc.data().name + '</div></div><div class="item-subtitle"></div></div></div></li>';
 
+    });
+    $$('#lijstKlanten').html(line);
+
+    $$('.klantList').on('click', function () {
+      kl_id = $$(this).attr('value');
+      sessionStorage.setItem('kl_id', kl_id);
+
+    });
+    $$('.popup-chat').on('popup:opened', function (e) {
+      loadMessagesMedewerker();
+
+    });
+
+
+  });*/
 }
 
 function saveMessageMedewerker() {
@@ -1767,7 +1878,7 @@ function saveMessageMedewerker() {
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }).then(function () {
 
-      //loadMessagesMedewerker();
+      //loadMessagesMedewerker(); 
       document.getElementById('textMessage').value = '';
     }).catch(function (error) {
       console.error('Error writing new message to Firebase Database', error);
@@ -1850,11 +1961,11 @@ function loadMessagesMedewerker() {
         var message = change.doc.data();
 
         if (message.uidUser == uidMedewerker) {
-          line += '<div class="message message-sent"><div class="message-content"><div class="message-header">' + message.naamMedewerker + '</div><div class="message-bubble"><div class="message-text">' + message.text + '</div></div></div></div>';
+          line += '<div class="message message-sent"><img style="border-radius: 50%;" width="20" height="20" src="' + message.photoMedewerker + '"><div class="message-content"><div class="message-header">' + message.naamMedewerker + '</div><div class="message-bubble"><div class="message-text">' + message.text + '</div></div></div></div>';
 
         }
         else if (message.uidUser == uidKlant) {
-          line += '<div class="message message-received"><div class="message-content"><div class="message-header">' + message.naamKlant + '</div><div class="message-bubble"><div class="message-text">' + message.text + '</div></div></div></div>';
+          line += '<div class="message message-received"><img style="border-radius: 50%;" width="20" height="20" src="' + message.photoKlant + '"><div class="message-content"><div class="message-header">' + message.naamKlant + '</div><div class="message-bubble"><div class="message-text">' + message.text + '</div></div></div></div>';
 
 
         }
