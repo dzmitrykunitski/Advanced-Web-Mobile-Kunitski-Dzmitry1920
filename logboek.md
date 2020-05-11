@@ -11,13 +11,13 @@
 * Referentie: https://firebase.google.com/docs/auth/web/cordova
 
 ### Week 4
-* Topic: Werken met Firestore ( Een mogelijkheid om de foto's opladen op de klant / de medewerker opladen).
+* Topic: Werken met Firestore ( Een mogelijkheid om de foto's opladen op de klantpagina / de medewerkerpagina).
 * Referentie: https://firebase.google.com/docs/firestore/quickstart
 
 ### Week 5
 * Firestore op IOS + Framework7
 * Probleem: Tijdends implementeren van Firestore hebben we tegen een probleem gekomen. Als framework7 project "WKWebView" plugin gebruikt, krijgen we bij de werkende app een fout van Firestore. ![](probleem1.png)
-* Oplossing: "WKWebView"plugin verwijderen en gebruiken "UIView" plugin.
+* Oplossing: "WKWebView"plugin verwijderen en gebruiken "UIWebView" plugin.
 
 ### Week 6 - 7
 * Topic: Werken aan onze app. Alle gegevens van de klant en de medewerker opslaan in Firebase en opladen in onze app ( Hotel toevoegen, reservatie maken, foto's / namen van de medewerker / de klant opladen op de profilepagina).
