@@ -27,7 +27,7 @@
 
 ### Week 10
 * Topic: Testflight
-* Probleem: Vanaf april weigert app's die "UIView" gebruikt. Maar het is een probleem met Firestore die "WKWebView" gebruikt.
+* Probleem: Vanaf april weigert app's die "UIWebView" gebruikt. Maar het is een probleem met Firestore die "WKWebView" gebruikt.
 * Oplossing: We hebben voor de oplossing op de forum van Framework7 gevraagd. Bij configuren van Firestore moeten we "settings" toevoegen: ```firebase.firestore().settings({ experimentalForceLongPolling: true });```
 * Referentie: https://forum.framework7.io/t/firebase-firestore-problem/10108/2
 
