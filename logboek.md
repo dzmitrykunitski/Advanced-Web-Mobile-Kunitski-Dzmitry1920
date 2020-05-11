@@ -19,7 +19,6 @@
 
 ### Week 5
 * Firestore op IOS + Framework7
-* Probleem: Tijdends implementeren van Firestore hebben we tegen een probleem gekomen. Als framework7 project "WKWebView" gebruikt, krijgen we bij de werkende app een fout van Firestore. 
+* Probleem: Tijdends implementeren van Firestore hebben we tegen een probleem gekomen. Als framework7 project "WKWebView" gebruikt, krijgen we bij de werkende app een fout van Firestore. ![](probleem1.png)
 * Oplossing: "WKWebView" verwijderen en gebruiken "UIView".
-![](probleem1.png)
 * Duur: 5 uur
