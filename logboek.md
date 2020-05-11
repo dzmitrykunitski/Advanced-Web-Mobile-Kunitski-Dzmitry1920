@@ -11,8 +11,7 @@
 * Referentie: https://firebase.google.com/docs/auth/web/cordova
 
 ### Week 4
-* Topic: Werken met Firestore ( De foto's van onze werkers opslaan in Firestore als ze op onze platform beginnen registreren. 
-* Probleem: De link van de foto ( Firestore ) te krijgen om deze foto op te slaan in de userprofile. 
+* Topic: Werken met Firestore ( Een mogelijkheid om de foto's opladen op de klant / de medewerker opladen).
 * Referentie: https://firebase.google.com/docs/firestore/quickstart
 
 ### Week 5
@@ -34,7 +33,7 @@
 
 ### Week 11
 * Topic: Aap Review (opladen app)
-* Probleem: We hebben onze app naar apple gestuurd voor review. We hebben de antwoord gekregen:
+* Probleem: We hebben onze app naar apple gestuurd voor review. We hebben het antwoord gekregen:
 
 ```From Apple
 Hello,
