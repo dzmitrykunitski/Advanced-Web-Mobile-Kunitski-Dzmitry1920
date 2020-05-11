@@ -99,7 +99,7 @@ var app = new Framework7({
   // App routes
   routes: [
     {
-      // home pagina
+      // Home pagina
       path: '/index/',
       url: 'index.html',
 
@@ -107,7 +107,7 @@ var app = new Framework7({
     },
 
     {
-      // de pagina waarin de medewerker zijn gegevens bijwerken.
+      // De pagina waarin de medewerker zijn gegevens bijwerken.
       path: '/medewerkeProfile/',
       url: 'medewerkeProfile.html',
       options: {
@@ -120,7 +120,7 @@ var app = new Framework7({
       }
     },
     {
-      // startpagina van de klant.
+      // Startpagina van de klant.
       path: '/klant/',
       url: 'klant.html',
       options: {
@@ -136,7 +136,7 @@ var app = new Framework7({
       }
     },
     {
-      // de chatpagina voor de medewerker
+      // De chatpagina voor de medewerker.
       path: '/berichtenVoorMedewerker/',
       url: 'berichtenVoorMedewerker.html',
       options: {
@@ -152,6 +152,7 @@ var app = new Framework7({
       }
     },
     {
+      // De chatpagina voor de klant.
       path: '/chat/',
       url: 'chat.html',
       options: {
@@ -168,7 +169,7 @@ var app = new Framework7({
       }
     },
     {
-      // de pagina met de lijst van onze klanten.
+      // De pagina met de lijst van onze klanten.
       path: '/lijstKlanten/',
       url: 'lijstKlanten.html',
       options: {
@@ -178,7 +179,7 @@ var app = new Framework7({
         pageInit: function (event, page) {
           lijstenVanDeKlanten();
 
-          // hulpsheet om de klant informatie te zien
+          // De hulpsheet om de klant informatie te zien.
           app.sheet.create({
             el: '.my-sheet-swipe-to-close2',
             swipeToClose: true,
@@ -191,7 +192,7 @@ var app = new Framework7({
       }
     },
     {
-      // de pagina met de lijst van onze medewerkers.
+      // De pagina met de lijst van onze medewerkers.
       path: '/onzemedewerker/',
       url: 'onzemedewerker.html',
       options: {
@@ -201,7 +202,7 @@ var app = new Framework7({
         pageInit: function (event, page) {
           onzeMedewerkerGegevens();
 
-          // hulpsheet om de klant informatie te zien
+          // De hulpsheet om de klant informatie te zien.
           app.sheet.create({
             el: '.my-sheet-swipe-to-close1',
             swipeToClose: true,
@@ -214,7 +215,7 @@ var app = new Framework7({
       }
     },
     {
-      // startpagina van de medewerker.
+      // Startpagina van de medewerker.
       path: '/medewerkerpagina/',
       url: 'medewerkerpagina.html',
       options: {
@@ -229,6 +230,7 @@ var app = new Framework7({
       }
     },
     {
+      // Op deze pagina kan de klant zijn reservaties raadplegen.
       path: '/reservatiespagina/',
       url: 'reservatiespagina.html',
       options: {
@@ -236,13 +238,13 @@ var app = new Framework7({
       },
       on: {
         pageInit: function (event, page) {
-
           getHistory();
 
         },
       }
     },
     {
+      // Op deze pagina kan de klant zijn hotels toevoegen of verwijderen.
       path: '/klantpagina/',
       url: 'klantpagina.html',
       options: {
@@ -257,6 +259,7 @@ var app = new Framework7({
       }
     },
     {
+      // Via deze pagina kan de klant onze medewerkers reserveren die in zijn hotel gaat werken.
       name: 'calendar',
       path: '/calendar/',
       componentUrl: 'calendar.html',
@@ -276,6 +279,7 @@ var app = new Framework7({
       }
     },
     {
+      // Op deze pagina kan de medewerker zijn reservaties raadplegen.
       path: '/geschiedenisvoormedewerker/',
       url: 'geschiedenisvoormedewerker.html',
       options: {
@@ -897,6 +901,7 @@ function bewaarMedewerker() {
 
   });
 }
+// De lijst van de medewerkers ophalen.
 function getMedewerkers() {
 
   firebase.firestore().collection("medewerker").get().then(function (querySnapshot) {
@@ -911,14 +916,10 @@ function getMedewerkers() {
 
 
 }
-
+// Via deze functie kan de klant zijn hotel toevoegen of verwijderen.
 function postHotel() {
   $$('#btnToevoegenHotel').on('click', function () {
-
-
     var uidKlant = sessionStorage.getItem('klant_id');
-
-
     firebase.firestore().collection('klant').doc(uidKlant)
       .collection('hotels').add({
         hotelNaam: document.getElementById('hotelNaam').value,
@@ -945,10 +946,7 @@ function TerugNaarIndex() {
 
   });
 }
-
-
-
-
+// De reservaties opslaan in Firebase.
 function sendReservatie() {
 
   $$('#btnReserveer').on('click', function () {
@@ -984,25 +982,9 @@ function sendReservatie() {
         app.dialog.alert(error);
       });
 
-    /* firebase.firestore().collection("reservaties").add({
-       klant_fr_id: sessionStorage.getItem('klant_id'),
-       naamHotel: selected_hotel,
-       start_datum: start_datum,
-       eind_datum: eind_datum,
-       start_tijd: start_tijd,
-       eind_tijd, eind_tijd,
-       medewerker_fr_id: selected_medewerker,
- 
-     })
-       .then(function () {
-         notificationReservatie.open();
-       })
-       .catch(function (error) {
-         notificationFull.open();
-       });*/
-
   });
 }
+// de lijst van de klanten ophalen.
 function getHotel() {
   let line = "";
 
@@ -1011,10 +993,7 @@ function getHotel() {
     .then(function (querySnapshot) {
       let line = "";
       querySnapshot.forEach(function (doc) {
-        // doc.data() is never undefined for query doc snapshots
         line += '<li value="' + doc.id + '"  class="swipeout deleted-callback"> <div class="item-content swipeout-content"><div class="item-inner"> <div class="item-title-row"><div class="item-title">' + doc.data().hotelNaam + '</div></div><div class="item-subtitle">' + doc.data().adres + ' ' + doc.data().nummer + ', ' + doc.data().postcode + ' ' + doc.data().gemeente + '</div></div></div><div class="swipeout-actions-right"><a href="#" data-confirm="Wil je die hotel verwijderen?" class="swipeout-delete swipeout-overswipe">Verwijderen</a></div></li>';
-
-
 
       });
       $$('#hotelGegegevens').html(line);
@@ -1035,88 +1014,10 @@ function getHotel() {
     .catch(function (error) {
       console.log("Error getting documents: ", error);
     });
-  /*firebase.firestore().collection("hotel").where("klant_id", "==", klant_id)
-    .get()
-    .then(function (querySnapshot) {
-      let line = "";
-      querySnapshot.forEach(function (doc) {
-        // doc.data() is never undefined for query doc snapshots
-        line += '<li value="' + doc.id + '"  class="swipeout deleted-callback"> <div class="item-content swipeout-content"><div class="item-inner"> <div class="item-title-row"><div class="item-title">' + doc.data().hotelNaam + '</div></div><div class="item-subtitle">' + doc.data().adres + ' ' + doc.data().nummer + ', ' + doc.data().postcode + ' ' + doc.data().gemeente + '</div></div></div><div class="swipeout-actions-right"><a href="#" data-confirm="Wil je die hotel verwijderen?" class="swipeout-delete swipeout-overswipe">Verwijderen</a></div></li>';
-
-
-
-      });
-      $$('#hotelGegegevens').html(line);
-      $$('.deleted-callback').on('swipeout:deleted', function () {
-
-        var locatie_id = $$(this).attr('value');
-        app.dialog.alert(locatie_id);
-        firebase.firestore().collection("hotel").doc(locatie_id).delete().then(function () {
-          app.dialog.alert("Document successfully deleted!");
-        }).catch(function (error) {
-          console.error("Error removing document: ", error);
-        });
-
-
-
-      });
-    })
-    .catch(function (error) {
-      console.log("Error getting documents: ", error);
-    });*/
-
-
-
-  /*let apiAddress = "https://anwin.be/src/public/hotel";
-  opties.body = JSON.stringify({
-    klant_id: sessionStorage.getItem('klant_id'),
-
-  });
-  fetch(apiAddress, opties)
-    .then(function (response) {
-      return response.json();
-    })
-    .then(function (responseData) {
-
-      var list = responseData;
-
-      if (list.length > 0) {
-        let line = "";
-        let line2 = "";
-
-        for (var i = 0; i < list.length; i++) {
-
-
-          //line += '<tr>' + '<td>' + '<label class="radio">' + '<input type="radio" value="' + list[i].locatie_id + '" name="hotel"/>' + '<i class="icon-radio"></i>' + '</label>' + '</td>' + '<td>' + list[i].naamHotel + '</td>' + '<td>' + list[i].adres + ' ' + list[i].nummer + ', ' + list[i].postcode + ' ' + list[i].gemeente + '</td>' + '</tr>';
-          line += '<li value="' + list[i].locatie_id + '"  class="swipeout deleted-callback"> <div class="item-content swipeout-content"><div class="item-inner"> <div class="item-title-row"><div class="item-title">' + list[i].naamHotel + '</div></div><div class="item-subtitle">' + list[i].adres + ' ' + list[i].nummer + ', ' + list[i].postcode + ' ' + list[i].gemeente + '</div></div></div><div class="swipeout-actions-right"><a href="#" data-confirm="Wil je die hotel verwijderen?" class="swipeout-delete swipeout-overswipe">Verwijderen</a></div></li>';
-
-        }
-        $$('#hotelGegegevens').html(line);
-        $$('.deleted-callback').on('swipeout:deleted', function () {
-          var locatie_id = $$(this).attr('value');
-          opties.body = JSON.stringify({
-            locatie_id: locatie_id,
-
-          });
-          let apiAddress = "https://anwin.be/src/public/hotelDelete";
-          fetch(apiAddress, opties)
-            .then(function (response) {
-              return response.text();
-            })
-            .then(function (responseData) {
-              app.dialog.alert(responseData);
-
-            })
-
-        });
-
-
-      }
-    })*/
-
 
 }
 
+// De lijst van de hotels ophalen.
 function getHotelLocatie() {
 
   firebase.firestore().collection('klant').doc(klant_id)
@@ -1124,7 +1025,6 @@ function getHotelLocatie() {
     .then(function (querySnapshot) {
       let line2 = "";
       querySnapshot.forEach(function (doc) {
-        // doc.data() is never undefined for query doc snapshots
         line2 += '<li><label class="item-radio item-content"><input type="radio" name="hotel" value="' + doc.data().hotelNaam + '"/><i class="icon icon-radio" checked></i><div class="item-inner"><div class="item-title-row"><div class="item-title">' + doc.data().hotelNaam + '</div></div></div></label></li>';
 
       });
@@ -1168,7 +1068,7 @@ var calendarRange;
 var calendarRange_end;
 
 
-
+// Datum ophalen voor de bepaalde medewerker
 function getCalender() {
   defaultCalendar();
   $$('#optieMedewerker').on('change', function (e) {
@@ -1223,77 +1123,9 @@ function getCalender() {
 
 
   });
-
-
-  /*$$('#optieMedewerker').on('change', function (e) {
-    var selected_value = $$('input[name="medewerker"]:checked').val();
-
-    app.calendar.destroy(calendarRange);
-    app.calendar.destroy(calendarRange_end);
-    let apiAddress = "https://anwin.be/src/public/calendar";
-    opties.body = JSON.stringify({
-      //medewerker_fr_id: document.getElementById('optieMedewerker').value,
-      medewerker_fr_id: selected_value,
-
-    });
-    fetch(apiAddress, opties)
-      .then(function (response) {
-
-        return response.json();
-      })
-      .then(function (responseData) {
-
-        var list = responseData;
-
-        calendarRange = app.calendar.create({
-          inputEl: '#demo-calendar-range_start',
-          locale: 'en-US',
-          openIn: 'customModal',
-          header: true,
-          footer: true,
-          dateFormat: 'yyyy-mm-dd',
-          disabled: list,
-        });
-        calendarRange_end = app.calendar.create({
-          inputEl: '#demo-calendar-range_end',
-          locale: 'en-US',
-          openIn: 'customModal',
-          header: true,
-          footer: true,
-          dateFormat: 'yyyy-mm-dd',
-          disabled: list,
-        });
-
-
-      })
-
-
-  });*/
-
 }
-
+// Default kalender bij opstarten van de pagina.
 function defaultCalendar() {
-
-  /*firebase.firestore().collection('medewerker').doc('xS8oczy5vfUtNyic58ZuoKxvTzD3')
-      .collection('reservaties').get()
-      .then(function (querySnapshot) {
-        var datum = [];
-        querySnapshot.forEach(function (doc) {
-          // doc.data() is never undefined for query doc snapshots
-          datum.push(doc.data().start_datum);
-          datum.push(doc.data().eind_datum);
-  
-  
-  
-  
-        });
-        console.log("Current cities in CA: ", datum.join(", "));
-  
-  
-      })
-      .catch(function (error) {
-        console.log("Error getting documents: ", error);
-      });*/
   var today = new Date();
   var pickerStartijd = app.picker.create({
 
@@ -1414,44 +1246,9 @@ function defaultCalendar() {
 
   });
 
-  /*let apiAddress = "https://anwin.be/src/public/calendar";
-  opties.body = JSON.stringify({
-    medewerker_fr_id: 1,
-
-  });
-  fetch(apiAddress, opties)
-    .then(function (response) {
-
-      return response.json();
-    })
-    .then(function (responseData) {
-
-      var list = responseData;
-
-      calendarRange = app.calendar.create({
-        inputEl: '#demo-calendar-range_start',
-        locale: 'en-US',
-        openIn: 'customModal',
-        header: true,
-        footer: true,
-        dateFormat: 'yyyy-mm-dd',
-        disabled: list,
-      });
-      calendarRange_end = app.calendar.create({
-        inputEl: '#demo-calendar-range_end',
-        locale: 'en-US',
-        openIn: 'customModal',
-        header: true,
-        footer: true,
-        dateFormat: 'yyyy-mm-dd',
-        disabled: list,
-      });
-
-
-    })*/
 
 }
-
+// De reservaties voor de klant ophalen.
 function getHistory() {
   firebase.firestore().collection('klant').doc(sessionStorage.getItem('klant_id'))
     .collection('reservaties').get()
@@ -1481,75 +1278,10 @@ function getHistory() {
     .catch(function (error) {
       console.log("Error getting documents: ", error);
     });
-  /* firebase.firestore().collection("reservaties").where("klant_fr_id", "==", sessionStorage.getItem('klant_id'))
-     .get()
-     .then(function (querySnapshot) {
-       let line = "";
-       querySnapshot.forEach(function (doc) {
-         // doc.data() is never undefined for query doc snapshots
-         line += '<div class="timeline-item"><div class="timeline-item-date">' + doc.data().start_datum + '</div> <div class="timeline-item-divider"></div><div class="timeline-item-content"><div class="list media-list"><ul>' + '<li value="' + doc.id + '" class="swipeout deleted-callback"><div class="swipeout-content"><div class="item-content"><div class="item-inner"><div class="item-title-row"><div class="timeline-item-title">' + doc.data().naamHotel + '</div></div><div class="timeline-item-title">' + ' ' + '</div><div class="item-subtitle">Start datum: ' + doc.data().start_datum + '</div><div class="item-subtitle">Start tijd: ' + doc.data().start_tijd + '</div><div class="item-subtitle">Eind datum: ' + doc.data().eind_datum + '</div class="item-subtitle">Eind tijd: ' + doc.data().eind_tijd + '<div></div></div></div></div><div class="swipeout-actions-right"><a href="#" class="swipeout-delete" data-confirm="Wil je deze reservatie verwijderen?"class="swipeout-delete swipeout-overswipe">Verwijderen</a></div></li>' + '</ul></div></div></div>';
- 
- 
-       });
-       $$('#reservatieHistory').html(line);
-       $$('.deleted-callback').on('swipeout:deleted', function () {
-         var reservatie_id = $$(this).attr('value');
-         app.dialog.alert(reservatie_id);
-         firebase.firestore().collection("reservaties").doc(reservatie_id).delete().then(function () {
-           app.dialog.alert("De reservering is verwijderd!");
-         }).catch(function (error) {
-           console.error("Error removing document: ", error);
-         });
- 
- 
-       });
- 
- 
-     })
-     .catch(function (error) {
-       console.log("Error getting documents: ", error);
-     });*/
-
-  /*let apiAddress = "https://anwin.be/src/public/history3";
-  opties.body = JSON.stringify({
-    klant_fr_id: sessionStorage.getItem('klant_id'),
-
-  });
-  fetch(apiAddress, opties)
-    .then(function (response) {
-      return response.json();
-    })
-    .then(function (responseData) {
-
-      var list = responseData;
-
-      if (list.length > 0) {
-        let line = "";
-        for (var i = 0; i < list.length; i++) {
-          line += '<div class="timeline-item"><div class="timeline-item-date">' + list[i].start_datum_D_M_Y + '</div> <div class="timeline-item-divider"></div><div class="timeline-item-content"><div class="list media-list"><ul>' + '<li value="' + list[i].reservatie_id + '" class="swipeout deleted-callback"><div class="swipeout-content"><div class="item-content"><div class="item-inner"><div class="item-title-row"><div class="timeline-item-title">' + list[i].naamHotel + '</div></div><div class="timeline-item-title">' + list[i].naam + ' ' + list[i].voornaam + '</div><div class="item-subtitle">' + list[i].start_datum + '</div><div class="item-subtitle">' + list[i].eind_datum + '</div></div></div></div><div class="swipeout-actions-right"><a href="#" class="swipeout-delete" data-confirm="Wil je deze reservatie verwijderen?"class="swipeout-delete swipeout-overswipe">Verwijderen</a></div></li>' + '</ul></div></div></div>';
-        }
-        $$('#reservatieHistory').html(line);
-        $$('.deleted-callback').on('swipeout:deleted', function () {
-          var reservatie_id = $$(this).attr('value');
-          opties.body = JSON.stringify({
-            reservatie_id: reservatie_id,
-          });
-          let apiAddress = "https://anwin.be/src/public/deleteReservatie";
-          fetch(apiAddress, opties)
-            .then(function (response) {
-              return response.text();
-            })
-            .then(function (responseData) {
-              app.dialog.alert(responseData);
-
-            })
-
-        });
-
-      }
-    })*/
 
 }
+
+// De reservaties voor de medewerker ophalen.
 function getHistoryVoorMedewerker() {
   firebase.firestore().collection('medewerker').doc(sessionStorage.getItem('id'))
     .collection('reservaties').get()
