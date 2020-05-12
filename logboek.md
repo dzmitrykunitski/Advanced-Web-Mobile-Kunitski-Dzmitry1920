@@ -39,7 +39,8 @@
 
     <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" />
 </platform> ```
-* Referentie: https://forum.framework7.io/t/firebase-firestore-problem/10108/2
+* Referentie: https://forum.framework7.io/t/firebase-firestore-problem/10108/2 
+* https://cordova.apache.org/howto/2020/03/18/wkwebviewonly.html
 
 ### Week 11
 * Topic: Aap Review (opladen app)
