@@ -28,7 +28,17 @@
 ### Week 10
 * Topic: Testflight
 * Probleem: Vanaf april weigert app's die "UIWebView" gebruikt. Maar het is een probleem met Firestore die "WKWebView" gebruikt.
-* Oplossing: We hebben voor de oplossing op de forum van Framework7 gevraagd. Bij configuren van Firestore moeten we "settings" toevoegen: ```firebase.firestore().settings({ experimentalForceLongPolling: true });```
+* Oplossing: We hebben voor de oplossing op de forum van Framework7 gevraagd. Bij configuren van Firestore moeten we "settings" toevoegen: ```firebase.firestore().settings({ experimentalForceLongPolling: true });``` . 
+* En we moeten bij "config.xml" de stuk code toevoegen om onze app op Testflight opladen.
+* ``` <platform name="ios">
+    <preference name="WKWebViewOnly" value="true" />
+
+    <feature name="CDVWKWebViewEngine">
+        <param name="ios-package" value="CDVWKWebViewEngine" />
+    </feature>
+
+    <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" />
+</platform> ```
 * Referentie: https://forum.framework7.io/t/firebase-firestore-problem/10108/2
 
 ### Week 11
