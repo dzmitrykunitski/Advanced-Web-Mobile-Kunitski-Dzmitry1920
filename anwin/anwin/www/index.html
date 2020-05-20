@@ -39,63 +39,63 @@
 
 <body>
   <div id="app">
+      <!-- Your main view, should have "view-main" class -->
+      <div class="view view-main">
+        <div class="page" data-name="home">
+          <div class="toolbar tabbar tabbar-labels toolbar-bottom">
+            <div class="toolbar-inner">
+              <a href="/inloggenmedewerker/" class="tab-link">
+                <span style="font-size: 24px;">
+                  <i class="fas fa-user-tie"></i>
+                </span>
 
+                <span class="tabbar-label">Medewerker</span>
+              </a>
+              <a href="#" data-sheet=".my-sheet-swipe-to-close" class="tab-link sheet-open">
+                <span style="font-size: 24px;">
+                  <i class="far fa-user-circle"></i>
+                </span>
 
-
-    <!-- Your main view, should have "view-main" class -->
-    <div class="view view-main">
-      <div class="page" data-name="home">
-        <div class="toolbar tabbar tabbar-labels toolbar-bottom">
-          <div class="toolbar-inner">
-            <a href="/inloggenmedewerker/" class="tab-link">
-              <span style="font-size: 24px;">
-                <i class="fas fa-user-tie"></i>
-              </span>
-              <span class="tabbar-label">Medewerker</span>
-            </a>
-            <a href="#" data-sheet=".my-sheet-swipe-to-close" class="tab-link sheet-open">
-              <span style="font-size: 24px;">
-                <i class="far fa-user-circle"></i>
-              </span>
-              <span class="tabbar-label">Klant</span>
-            </a>
-          </div>
-        </div>
-      
-        <!-- Scrollable page content-->
-        <div class="page-content">
-          <div class="block" id="content">
-            <div class="item-media"><img style="width: 170px; height: 170px; border-radius: 50%"
-                src="./img/cordova-splash-screen.png">
+                <span class="tabbar-label">Klant</span>
+              </a>
             </div>
-
+          </div>
+        
+          <!-- Scrollable page content-->
+          <div class="page-content">
+            <div class="block" id="content">
+              <div class="item-media"><img class="media-img" src="./img/cordova-splash-screen.png">
+            </div>
+            
             <div class="fab fab-right-top color-white fab-morph">
-
               <label id="toggleLabel" class="toggle color-black">
                 <input type="checkbox" checked>
+                
                 <span class="toggle-icon"></span>
               </label>
-
             </div>
-
           </div>
-          <div class="block block-strong ">
+          
+          <div class="block block-strong">
             <div class="login-screen-title">Welkom bij Anwin</div>
-
+            
             <p>Wij zijn een keten van professionele Night Auditors en Front Office Managers en kunnen uw nachtreceptie volledig, gedeeltelijk, tijdelijk of voor een langere periode versterken.</p>
-
+            
             <p>Onze kerncompetenties zijn personalisatie en een oog voor details hebben, zodat elke gast zich meteen thuis voelt. Wij streven de perfectie na door enkel gedisciplineerde werknemers in dienst te nemen die een voortdurende passie voor kwaliteit hebben.</p>
-
+            
             <p>Wij onderscheiden ons door de hoge servicegraad die wij aan onze gasten aanbieden in de loop van de nacht. Onze werknemers ontvangen uw gasten steeds met een glimlach, zijn hulpvaardig en handelen steeds professioneel. Mocht er onverhoopt ooit een calamiteit gebeuren, dan weet onze nachtreceptionist hoe te handelen. Wat uw keuze ook is, uw hotel krijgt onze volledige aandacht.</p>
           </div>
         </div>
-        <div class="sheet-modal my-sheet-swipe-to-close" style="height:auto; --f7-sheet-bg-color: #fff;">
+        
+        <div class="sheet-modal my-sheet-swipe-to-close h-auto -bg-white">
           <div class="toolbar">
             <div class="toolbar-inner">
               <div class="left"></div>
+              
               <div class="right"><a class="link sheet-close" href="#">Sluiten</a></div>
             </div>
           </div>
+          
           <div class="sheet-modal-inner">
             <div class="page-content">
               <div id="firebaseui-auth-container"></div>
@@ -105,6 +105,7 @@
       </div>
     </div>
   </div>
+  
   <!-- The core Firebase JS SDK is always required and must be listed first -->
   <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-app.js"></script>
 
@@ -124,5 +125,4 @@
   <!-- App scripts -->
   <script src="js/app.js"></script>
 </body>
-
 </html>
