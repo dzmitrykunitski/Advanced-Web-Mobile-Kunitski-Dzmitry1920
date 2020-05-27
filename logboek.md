@@ -7,7 +7,7 @@
 
 
 ### Week 2 - 3
-* Probleem: We werken met Cordova. Als we Google service beginnen implementeren, hebben we een probleem. Google (inloggen) werkt niet. Er was een probleem met "universal-link". Op de documentatie staat niet dat we eerst de command "cordova plugin add cordova-universal-links-plugin" moeten invoeren. Daarna moeten we de command "cordova plugin add cordova-universal-links-plugin-fix --save" invoeren.
+* Tijdens het werken met Cordova stootten we op een probleem: Als wij de Google login service beginnen implementeren, merken we op dat we niet kunnen inloggen via Google. Er was een probleem met "universal-link". Op de documentatie staat niet dat we eerst het commando "cordova plugin add cordova-universal-links-plugin" moeten uitvoeren. Daarna moeten we het commando "cordova plugin add cordova-universal-links-plugin-fix --save" uitvoeren.
 * Referentie: https://firebase.google.com/docs/auth/web/cordova
 
 ### Week 4
