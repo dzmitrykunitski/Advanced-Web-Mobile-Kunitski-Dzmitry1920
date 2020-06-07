@@ -77,15 +77,18 @@ Wij hebben hiervoor een oplossing gevonden, namelijk de *```WKWebView```* plug-i
 #### Oplossing:
 * We zijn ten rade geweest op het forum van *Framework7*. Bij het configuren van *Firestore* moeten we een paar "settings" toevoegen: ```firebase.firestore().settings({ experimentalForceLongPolling: true });``` . 
 * In *config.xml* moeten we ook een stuk code toevoegen om onze app op *TestFlight* te kunnen opladen.
-  ``` <platform name="ios">
-    <preference name="WKWebViewOnly" value="true" />
 
-    <feature name="CDVWKWebViewEngine">
-        <param name="ios-package" value="CDVWKWebViewEngine" />
-    </feature>
-
-    <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" />
-  </platform>```
+```
+<platform name="ios">
+	 …
+	 <preference name="WKWebViewOnly" value="true" />
+   
+   <feature name="CDVWKWebViewEngine">
+       <param name="ios-package" value="CDVWKWebViewEngine" />
+   </feature>
+   <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" />
+</platform>
+```
 
 #### Referenties:
 * https://forum.framework7.io/t/firebase-firestore-problem/10108/2 
@@ -100,7 +103,7 @@ Wij hebben hiervoor een oplossing gevonden, namelijk de *```WKWebView```* plug-i
 #### Probleem:
 * We hebben onze app naar *Apple* gestuurd voor een app review. Wij kregen van *Apple* volgend antwoord:
 
-```From Apple
+```
 Hello,
 
 Thank you for your continued patience. 
@@ -131,4 +134,9 @@ We hope you will consider making the necessary changes to be in compliance with 
 
 Best regards,
 
-App Store Review```
+App Store Review
+```
+
+* Tot op heden staat onze app nog altijd niet in de *App Store*. Eerder haalde *Apple* al aan dat we gebruik maakten van verouderde API’s. We moesten *```UIWebView```* niet meer gebruiken en moesten dit vervangen met *```WKWebView```*. Dit deden we ook.
+
+* Nu klaagt *Apple* dat onze app teveel lijkt op andere apps. We kunnen al raden welke dit zullen zijn: *[Hotel Trivago](https://apps.apple.com/be/app/trivago-compare-hotel-prices/id376888389)* en *[Hotel Tonight: Hotelkortingen](https://apps.apple.com/nl/app/hotel-tonight-hotelkortingen/id407690035)*. In tegenstelling tot deze apps raden wij zelf geen hotels aan tegen kortingen, maar bieden wij louter nachtreceptie aan voor hotels die onze diensten ondersteunen.
