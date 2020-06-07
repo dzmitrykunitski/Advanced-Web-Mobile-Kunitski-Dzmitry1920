@@ -2,22 +2,31 @@
 
 ## Kunitski Dzmitry
 ### Week 1
-* Topic: Introductie (Firebase), FriendlyChat maken.
+#### Topic:
+* Introductie (Firebase), FriendlyChat maken.
+
 #### Referenties:
 * http://firebase.google.com/
 
 ---
 
 ### Week 2 - 3
+#### Topic:
+* Implementatie Google login
+
 * Tijdens het werken met Cordova stootten we op een probleem: Als wij de Google login service beginnen implementeren, merken we op dat we niet kunnen inloggen via Google. Er was een probleem met "universal-link". Op de documentatie staat niet dat we eerst het commando "cordova plugin add cordova-universal-links-plugin" moeten uitvoeren. Daarna moeten we het commando "cordova plugin add cordova-universal-links-plugin-fix --save" uitvoeren.
+
 #### Referenties:
 * https://firebase.google.com/docs/auth/web/cordova
 
 ---
 
 ### Week 4
-* Topic: Cloud FireStore
+#### Topic:
+* Cloud FireStore
+
 * We werken met Cloud FireStore. Dit is een mogelijkheid om foto’s op te laden via de klant- en medewerkerspagina.
+
 #### Referenties:
 * https://firebase.google.com/docs/firestore/quickstart
 
@@ -25,7 +34,10 @@
 
 ### Week 5
 
-* Topics: Firestore op iOS, Framework7
+#### Topics:
+* Firestore op iOS;
+* Framework7.
+
 * In deze week zijn wij vooral bezig met Firestore op iOS en Framework7. Tijdens het implementeren van FireStore zijn we tegen een probleem gebotst. Als ons Framework7 project de plug-in "WKWebView" gebruikt, dan krijgen we in de werkende app een fout van FireStore.
 Wij hebben hiervoor een oplossing gevonden, namelijk de "WKWebView" plug-in verwijderen en de "UIWebView" plug-in in de plaats hiervan gebruiken.
 
@@ -34,26 +46,31 @@ Wij hebben hiervoor een oplossing gevonden, namelijk de "WKWebView" plug-in verw
 ---
 
 ### Week 6 - 7
-* Topic: Firebase
+#### Topic:
+* Firebase
+
 * We werken verder aan onze app. Alle gegevens van de klant en de medewerker worden opgeslagen in Firebase en deze worden vervolgens opgeladen in onze app ( Hotel toevoegen, reservatie maken, foto's / namen van de medewerker / de klant opladen op de profielpagina).
 
 ---
 
 ### Week 8 - 9
-* Topic: Het implementeren van de chat.
+#### Topic:
+* Het implementeren van de chat.
+
 * Onze chat moet een connectie maken tussen de medewerker en de klant. De klant kan met al zijn vragen en problemen terecht bij onze medewerker.
 
 ---
 
 ### Week 10
-* Topic: TestFlight
+#### Topic:
+* TestFlight
 #### Probleem:
-Vanaf april weigert onze app om "UIWebView" te gebruiken. Dit blijkt echter een probleem met Firestore in combinatie met Framework7 te zijn: deze gebruiken namelijk "WKWebView".
+* Vanaf april weigert onze app om "UIWebView" te gebruiken. Dit blijkt echter een probleem met Firestore in combinatie met Framework7 te zijn: deze gebruiken namelijk "WKWebView".
 
 #### Oplossing:
 * We zijn ten rade geweest op het forum van Framework7. Bij het configuren van Firestore moeten we een paar "settings" toevoegen: ```firebase.firestore().settings({ experimentalForceLongPolling: true });``` . 
 * In "config.xml" moeten we ook een stuk code toevoegen om onze app op Testflight te kunnen opladen.
-``` <platform name="ios">
+  ``` <platform name="ios">
     <preference name="WKWebViewOnly" value="true" />
 
     <feature name="CDVWKWebViewEngine">
