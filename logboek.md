@@ -143,3 +143,6 @@ firebase.firestore().settings({ experimentalForceLongPolling: true });
 * Tot op heden staat onze app nog altijd niet in de *App Store*. Eerder haalde *Apple* al aan dat we gebruik maakten van verouderde API’s. We moesten *```UIWebView```* niet meer gebruiken en moesten dit vervangen met *```WKWebView```*. Dit deden we ook.
 
 * Nu klaagt *Apple* dat onze app teveel lijkt op andere apps. We kunnen al raden welke dit zullen zijn: *[Hotel Trivago](https://apps.apple.com/be/app/trivago-compare-hotel-prices/id376888389)* en *[Hotel Tonight: Hotelkortingen](https://apps.apple.com/nl/app/hotel-tonight-hotelkortingen/id407690035)*. In tegenstelling tot deze apps raden wij zelf geen hotels aan tegen kortingen, maar bieden wij louter nachtreceptie aan voor hotels die onze diensten ondersteunen.
+
+#### Oplossing:
+* Wij hebben hier nog geen oplossing voor.
