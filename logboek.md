@@ -1,4 +1,4 @@
-# Advanced-Web-Mobile-Kunitski-Dzmitry1920
+# Logboek Advanced Web & Mobile van Dzmitry Kunitski & Sasja Limpens
 
 ## Week 1
 ### Topics:
