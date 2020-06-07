@@ -1,47 +1,46 @@
 # Advanced-Web-Mobile-Kunitski-Dzmitry1920
 
-## Kunitski Dzmitry
-### Week 1
-#### Topics:
+## Week 1
+### Topics:
 * Introductie (*Firebase*)
 * *FriendlyChat* maken.
 
-#### Referenties:
+### Referenties:
 * http://firebase.google.com/
 
 ---
 
-### Week 2 - 3
-#### Topics:
+## Week 2 - 3
+### Topics:
 * Implementatie *Google* login.
 
-#### Beschrijving:
+### Beschrijving:
 * Tijdens het werken met *Cordova* stootten we op een probleem: Als wij de *Google* login service beginnen implementeren, merken we op dat we niet kunnen inloggen via *Google*. Er was een probleem met *```universal-link```*. Op de documentatie staat niet dat we eerst het commando ```cordova plugin add cordova-universal-links-plugin``` moeten uitvoeren. Daarna moeten we het commando ```cordova plugin add cordova-universal-links-plugin-fix --save``` uitvoeren.
 
-#### Referenties:
+### Referenties:
 * https://firebase.google.com/docs/auth/web/cordova
 
 ---
 
-### Week 4
-#### Topics:
+## Week 4
+### Topics:
 * *Cloud Firestore*
 
-#### Beschrijving:
+### Beschrijving:
 * We werken met *Cloud Firestore*. Dit is een mogelijkheid om foto’s op te laden via de klant- en medewerkerspagina.
 
-#### Referenties:
+### Referenties:
 * https://firebase.google.com/docs/firestore/quickstart
 
 ---
 
-### Week 5
+## Week 5
 
-#### Topics:
+### Topics:
 * *Firestore* op *iOS*;
 * *Framework7*.
 
-#### Beschrijving:
+### Beschrijving:
 * In deze week zijn wij vooral bezig met *Firestore* op *iOS* en *Framework7*. Tijdens het implementeren van *Firestore* zijn we tegen een probleem gebotst. Als ons *Framework7* project de plug-in *```WKWebView```* gebruikt, dan krijgen we in de werkende app een fout van *Firestore*.
 Wij hebben hiervoor een oplossing gevonden, namelijk de *```WKWebView```* plug-in verwijderen en de *```UIWebView```* plug-in in de plaats hiervan gebruiken.
 
@@ -49,32 +48,32 @@ Wij hebben hiervoor een oplossing gevonden, namelijk de *```WKWebView```* plug-i
 
 ---
 
-### Week 6 - 7
-#### Topics:
+## Week 6 - 7
+### Topics:
 * *Firebase*
 
-#### Beschrijving:
+### Beschrijving:
 * We werken verder aan onze app. Alle gegevens van de klant en de medewerker worden opgeslagen in *Firebase* en deze worden vervolgens opgeladen in onze app. Nu kunnen we hotels toevoegen, een reservatie maken, en foto's en namen van medewerkers en klanten opladen op de profielpagina.
 
 ---
 
-### Week 8 - 9
-#### Topics:
+## Week 8 - 9
+### Topics:
 * Het implementeren van de chat.
 
-#### Beschrijving:
+### Beschrijving:
 * Onze chat moet een connectie maken tussen de medewerker en de klant. De klant kan met al zijn vragen en problemen terecht bij onze medewerker.
 
 ---
 
-### Week 10
-#### Topics:
+## Week 10
+### Topics:
 * Probleem *```UIWebView```*.
 
-#### Probleem:
+### Probleem:
 * Vanaf april weigert onze app om *```UIWebView```* te gebruiken. Dit blijkt echter een probleem met *Firestore* in combinatie met *Framework7* te zijn: deze gebruiken namelijk *```WKWebView```*.
 
-#### Oplossing:
+### Oplossing:
 * We zijn ten rade geweest op het forum van *Framework7*. Bij het configuren van *Firestore* moeten we een paar "settings" toevoegen: 
 
 ```javascript
@@ -95,17 +94,17 @@ firebase.firestore().settings({ experimentalForceLongPolling: true });
 </platform>
 ```
 
-#### Referenties:
+### Referenties:
 * https://forum.framework7.io/t/firebase-firestore-problem/10108/2 
 * https://cordova.apache.org/howto/2020/03/18/wkwebviewonly.html
 
 ---
 
-### Week 11
-#### Topics:
+## Week 11
+### Topics:
 * App Review (opladen app).
 
-#### Probleem:
+### Probleem:
 * We hebben onze app naar *Apple* gestuurd voor een app review. Wij kregen van *Apple* volgend antwoord:
 
 >Hello,
@@ -144,5 +143,5 @@ firebase.firestore().settings({ experimentalForceLongPolling: true });
 
 * Nu klaagt *Apple* dat onze app teveel lijkt op andere apps. We kunnen al raden welke dit zullen zijn: *[Hotel Trivago](https://apps.apple.com/be/app/trivago-compare-hotel-prices/id376888389)* en *[Hotel Tonight: Hotelkortingen](https://apps.apple.com/nl/app/hotel-tonight-hotelkortingen/id407690035)*. In tegenstelling tot deze apps raden wij zelf geen hotels aan tegen kortingen, maar bieden wij louter nachtreceptie aan voor hotels die onze diensten ondersteunen.
 
-#### Oplossing:
+### Oplossing:
 * Wij hebben hier nog geen oplossing voor.
