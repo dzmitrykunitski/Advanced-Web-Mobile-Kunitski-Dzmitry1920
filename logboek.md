@@ -75,10 +75,15 @@ Wij hebben hiervoor een oplossing gevonden, namelijk de *```WKWebView```* plug-i
 * Vanaf april weigert onze app om *```UIWebView```* te gebruiken. Dit blijkt echter een probleem met *Firestore* in combinatie met *Framework7* te zijn: deze gebruiken namelijk *```WKWebView```*.
 
 #### Oplossing:
-* We zijn ten rade geweest op het forum van *Framework7*. Bij het configuren van *Firestore* moeten we een paar "settings" toevoegen: ```firebase.firestore().settings({ experimentalForceLongPolling: true });``` . 
+* We zijn ten rade geweest op het forum van *Framework7*. Bij het configuren van *Firestore* moeten we een paar "settings" toevoegen: 
+
+```javascript
+firebase.firestore().settings({ experimentalForceLongPolling: true });
+```
+
 * In *config.xml* moeten we ook een stuk code toevoegen om onze app op *TestFlight* te kunnen opladen.
 
-```
+```xml
 <platform name="ios">
 	 …
 	 <preference name="WKWebViewOnly" value="true" />
