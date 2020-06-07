@@ -1,4 +1,4 @@
-# Logboek Advanced Web & Mobile van Dzmitry Kunitski & Sasja Limpens
+# Logboek Advanced Web & Mobile | Dzmitry Kunitski & Sasja Limpens
 
 ## Week 1
 ### Topics:
