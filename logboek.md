@@ -3,16 +3,19 @@
 ## Kunitski Dzmitry
 ### Week 1
 * Topic: Introductie (Firebase), FriendlyChat maken.
-* Referentie: http://firebase.google.com/
+#### Referenties:
+http://firebase.google.com/
 
 
 ### Week 2 - 3
 * Tijdens het werken met Cordova stootten we op een probleem: Als wij de Google login service beginnen implementeren, merken we op dat we niet kunnen inloggen via Google. Er was een probleem met "universal-link". Op de documentatie staat niet dat we eerst het commando "cordova plugin add cordova-universal-links-plugin" moeten uitvoeren. Daarna moeten we het commando "cordova plugin add cordova-universal-links-plugin-fix --save" uitvoeren.
-* Referentie: https://firebase.google.com/docs/auth/web/cordova
+#### Referenties:
+* https://firebase.google.com/docs/auth/web/cordova
 
 ### Week 4
 * Topic: We werken met Cloud FireStore. Dit is een mogelijkheid om foto’s op te laden via de klant- en medewerkerspagina.
-* Referentie: https://firebase.google.com/docs/firestore/quickstart
+#### Referenties:
+* https://firebase.google.com/docs/firestore/quickstart
 
 ### Week 5
 
@@ -40,7 +43,7 @@ Wij hebben hiervoor een oplossing gevonden, namelijk de "WKWebView" plug-in verw
 
     <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" />
 </platform> ```
-* Referenties:
+#### Referenties:
 * https://forum.framework7.io/t/firebase-firestore-problem/10108/2 
 * https://cordova.apache.org/howto/2020/03/18/wkwebviewonly.html
 
