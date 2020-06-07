@@ -108,39 +108,37 @@ firebase.firestore().settings({ experimentalForceLongPolling: true });
 #### Probleem:
 * We hebben onze app naar *Apple* gestuurd voor een app review. Wij kregen van *Apple* volgend antwoord:
 
-```
-Hello,
-
-Thank you for your continued patience. 
-
-We are writing to let you know that we have completed our investigation of your Apple Developer Program account. Upon further investigation, we found that your app does not comply with the following guidelines:
-
-Guideline 4.3 - Design
-
-We noticed that your app provides the same feature set as other apps submitted to the App Store; it simply varies in content or language, which is considered a form of spam.
-
-The next submission of this app may require a longer review time, and this app will not be eligible for an expedited review until this issue is resolved.
-
-Next Steps
-
-- Review the Design section of the App Store Review Guidelines.
-- Ensure your app is compliant with all sections of the App Store Review Guidelines and the Terms & Conditions of the Apple Developer Program. 
-- Once your app is fully compliant, resubmit your app for review.
-
-When creating multiple apps where content is the only varying element, you should offer a single app to deliver differing content to customers. If you would like to offer this content for purchase, it would be appropriate to use the in-app purchase API.
-
-Alternatively, you may consider creating a web app, which looks and behaves similar to a native app when the customer adds it to their Home screen. Refer to the Configuring Web Applications section of the Safari Web Content Guide for more information.
-
-Submitting apps designed to mislead or harm customers or evade the review process may result in the termination of your Apple Developer Program account. Review the Terms & Conditions of the Apple Developer Program to learn more about our policies regarding termination.
-
-All apps submitted to the App Store are reviewed against the App Store Review Guidelines, including the Developer Code of Conduct. If we find any issues during our review, your account will be re-investigated. In order to avoid future investigations, please ensure your apps don't attempt to mislead or harm customers or undermine the review process. 
-
-We hope you will consider making the necessary changes to be in compliance with the App Store Review Guidelines and will resubmit your revised binary. 
-
-Best regards,
-
-App Store Review
-```
+>Hello,
+>
+>Thank you for your continued patience. 
+>
+>We are writing to let you know that we have completed our investigation of your Apple Developer Program account. Upon further investigation, we found that your app does not comply with the following guidelines:
+>
+>Guideline 4.3 - Design
+>
+>We noticed that your app provides the same feature set as other apps submitted to the App Store; it simply varies in content or language, which is considered a form of spam.
+>
+>The next submission of this app may require a longer review time, and this app will not be eligible for an expedited review until this issue is resolved.
+>
+>Next Steps
+>
+>- Review the Design section of the App Store Review Guidelines.
+>- Ensure your app is compliant with all sections of the App Store Review Guidelines and the Terms & Conditions of the Apple Developer Program. 
+>- Once your app is fully compliant, resubmit your app for review.
+>
+>When creating multiple apps where content is the only varying element, you should offer a single app to deliver differing content to customers. If you would like to offer this content for purchase, it would be appropriate to use the in-app purchase API.
+>
+>Alternatively, you may consider creating a web app, which looks and behaves similar to a native app when the customer adds it to their Home screen. Refer to the Configuring Web Applications section of the Safari Web Content Guide for more information.
+>
+>Submitting apps designed to mislead or harm customers or evade the review process may result in the termination of your Apple Developer Program account. Review the Terms & Conditions of the Apple Developer Program to learn more about our policies regarding termination.
+>
+>All apps submitted to the App Store are reviewed against the App Store Review Guidelines, including the Developer Code of Conduct. If we find any issues during our review, your account will be re-investigated. In order to avoid future investigations, please ensure your apps don't attempt to mislead or harm customers or undermine the review process.
+>
+> We hope you will consider making the necessary changes to be in compliance with the App Store Review Guidelines and will resubmit your revised binary.
+>
+> Best regards,
+>
+> App Store Review
 
 * Tot op heden staat onze app nog altijd niet in de *App Store*. Eerder haalde *Apple* al aan dat we gebruik maakten van verouderde API’s. We moesten *```UIWebView```* niet meer gebruiken en moesten dit vervangen met *```WKWebView```*. Dit deden we ook.
 
