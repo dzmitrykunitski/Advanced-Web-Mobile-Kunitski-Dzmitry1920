@@ -4,7 +4,7 @@
 ### Week 1
 * Topic: Introductie (Firebase), FriendlyChat maken.
 #### Referenties:
-http://firebase.google.com/
+* http://firebase.google.com/
 
 ---
 
@@ -26,7 +26,7 @@ http://firebase.google.com/
 ### Week 5
 
 * Topics: Firestore op iOS, Framework7
-* In deze week zijn wij vooral bezig met Firestore op iOS en Framework7. Tijdens het implementeren van FireStore zijn we tegen een probleem gebotst. Als ons framework7 project de plug-in "WKWebView" gebruikt, dan krijgen we in de werkende app een fout van FireStore.
+* In deze week zijn wij vooral bezig met Firestore op iOS en Framework7. Tijdens het implementeren van FireStore zijn we tegen een probleem gebotst. Als ons Framework7 project de plug-in "WKWebView" gebruikt, dan krijgen we in de werkende app een fout van FireStore.
 Wij hebben hiervoor een oplossing gevonden, namelijk de "WKWebView" plug-in verwijderen en de "UIWebView" plug-in in de plaats hiervan gebruiken.
 
 ![](probleem1.png)
@@ -47,10 +47,13 @@ Wij hebben hiervoor een oplossing gevonden, namelijk de "WKWebView" plug-in verw
 
 ### Week 10
 * Topic: TestFlight
-* Probleem: Vanaf april weigert onze app om "UIWebView" te gebruiken. Dit blijkt echter een probleem met Firestore + Framework7 te zijn: deze gebruiken namelijk "WKWebView".
-* Oplossing: We zijn ten rade geweest op het forum van Framework7. Bij het configuren van Firestore moeten we een paar "settings" toevoegen: ```firebase.firestore().settings({ experimentalForceLongPolling: true });``` . 
+#### Probleem:
+Vanaf april weigert onze app om "UIWebView" te gebruiken. Dit blijkt echter een probleem met Firestore in combinatie met Framework7 te zijn: deze gebruiken namelijk "WKWebView".
+
+#### Oplossing:
+* We zijn ten rade geweest op het forum van Framework7. Bij het configuren van Firestore moeten we een paar "settings" toevoegen: ```firebase.firestore().settings({ experimentalForceLongPolling: true });``` . 
 * In "config.xml" moeten we ook een stuk code toevoegen om onze app op Testflight te kunnen opladen.
-* ``` <platform name="ios">
+``` <platform name="ios">
     <preference name="WKWebViewOnly" value="true" />
 
     <feature name="CDVWKWebViewEngine">
@@ -58,7 +61,8 @@ Wij hebben hiervoor een oplossing gevonden, namelijk de "WKWebView" plug-in verw
     </feature>
 
     <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" />
-</platform> ```
+</platform>```
+
 #### Referenties:
 * https://forum.framework7.io/t/firebase-firestore-problem/10108/2 
 * https://cordova.apache.org/howto/2020/03/18/wkwebviewonly.html
