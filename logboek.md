@@ -3,7 +3,7 @@
 ## Kunitski Dzmitry
 ### Week 1
 #### Topics:
-* Introductie (Firebase)
+* Introductie (*Firebase*)
 * *FriendlyChat* maken.
 
 #### Referenties:
@@ -16,7 +16,7 @@
 * Implementatie *Google* login.
 
 #### Beschrijving:
-* Tijdens het werken met *Cordova* stootten we op een probleem: Als wij de *Google* login service beginnen implementeren, merken we op dat we niet kunnen inloggen via *Google*. Er was een probleem met "universal-link". Op de documentatie staat niet dat we eerst het commando ```cordova plugin add cordova-universal-links-plugin``` moeten uitvoeren. Daarna moeten we het commando ```cordova plugin add cordova-universal-links-plugin-fix --save``` uitvoeren.
+* Tijdens het werken met *Cordova* stootten we op een probleem: Als wij de *Google* login service beginnen implementeren, merken we op dat we niet kunnen inloggen via *Google*. Er was een probleem met *```universal-link```*. Op de documentatie staat niet dat we eerst het commando ```cordova plugin add cordova-universal-links-plugin``` moeten uitvoeren. Daarna moeten we het commando ```cordova plugin add cordova-universal-links-plugin-fix --save``` uitvoeren.
 
 #### Referenties:
 * https://firebase.google.com/docs/auth/web/cordova
@@ -25,10 +25,10 @@
 
 ### Week 4
 #### Topics:
-* *Cloud FireStore*
+* *Cloud Firestore*
 
 #### Beschrijving:
-* We werken met *Cloud FireStore*. Dit is een mogelijkheid om foto’s op te laden via de klant- en medewerkerspagina.
+* We werken met *Cloud Firestore*. Dit is een mogelijkheid om foto’s op te laden via de klant- en medewerkerspagina.
 
 #### Referenties:
 * https://firebase.google.com/docs/firestore/quickstart
@@ -95,7 +95,7 @@ Wij hebben hiervoor een oplossing gevonden, namelijk de *```WKWebView```* plug-i
 
 ### Week 11
 #### Topics:
-* App Review (opladen app)
+* App Review (opladen app).
 
 #### Probleem:
 * We hebben onze app naar *Apple* gestuurd voor een app review. Wij kregen van *Apple* volgend antwoord:
