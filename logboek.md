@@ -6,28 +6,38 @@
 #### Referenties:
 http://firebase.google.com/
 
+---
 
 ### Week 2 - 3
 * Tijdens het werken met Cordova stootten we op een probleem: Als wij de Google login service beginnen implementeren, merken we op dat we niet kunnen inloggen via Google. Er was een probleem met "universal-link". Op de documentatie staat niet dat we eerst het commando "cordova plugin add cordova-universal-links-plugin" moeten uitvoeren. Daarna moeten we het commando "cordova plugin add cordova-universal-links-plugin-fix --save" uitvoeren.
 #### Referenties:
 * https://firebase.google.com/docs/auth/web/cordova
 
+---
+
 ### Week 4
 * Topic: We werken met Cloud FireStore. Dit is een mogelijkheid om foto’s op te laden via de klant- en medewerkerspagina.
 #### Referenties:
 * https://firebase.google.com/docs/firestore/quickstart
+
+---
 
 ### Week 5
 
 * In deze week zijn wij vooral bezig met Firestore op IOS en Framework7. Tijdens het implementeren van FireStore zijn we tegen een probleem gebotst. Als ons framework7 project de plug-in "WKWebView" gebruikt, dan krijgen we in de werkende app een fout van FireStore.
 Wij hebben hiervoor een oplossing gevonden, namelijk de "WKWebView" plug-in verwijderen en de "UIWebView" plug-in in de plaats hiervan gebruiken. ![](probleem1.png)
 
+---
 
 ### Week 6 - 7
 * Topic: We werken verder aan onze app. Alle gegevens van de klant en de medewerker worden opgeslagen in Firebase en deze worden vervolgens opgeladen in onze app ( Hotel toevoegen, reservatie maken, foto's / namen van de medewerker / de klant opladen op de profielpagina).
 
+---
+
 ### Week 8 - 9
 * Topic: Het implementeren van de chat. Onze chat moet een connectie maken tussen de medewerker en de klant. De klant kan met al zijn vragen en problemen terecht bij onze medewerker.
+
+---
 
 ### Week 10
 * Topic: Testflight
@@ -46,6 +56,8 @@ Wij hebben hiervoor een oplossing gevonden, namelijk de "WKWebView" plug-in verw
 #### Referenties:
 * https://forum.framework7.io/t/firebase-firestore-problem/10108/2 
 * https://cordova.apache.org/howto/2020/03/18/wkwebviewonly.html
+
+---
 
 ### Week 11
 * Topic: App Review (opladen app)
