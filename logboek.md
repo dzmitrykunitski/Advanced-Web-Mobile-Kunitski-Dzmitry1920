@@ -15,7 +15,7 @@
 * Implementatie *Google* login.
 
 ### Beschrijving:
-* Tijdens het werken met *Cordova* stootten we op een probleem: Als wij de *Google* login service beginnen implementeren, merken we op dat we niet kunnen inloggen via *Google*. Er was een probleem met *```universal-link```*. Op de documentatie staat niet dat we eerst het commando ```cordova plugin add cordova-universal-links-plugin``` moeten uitvoeren. Daarna moeten we het commando ```cordova plugin add cordova-universal-links-plugin-fix --save``` uitvoeren.
+* Tijdens het werken met *Cordova* stoten we op een probleem: Als wij de *Google* login service beginnen te implementeren, merken we op dat we niet kunnen inloggen via *Google*. Er was een probleem met *```universal-link```*. Op de documentatie staat niet dat we eerst het commando ```cordova plugin add cordova-universal-links-plugin``` moeten uitvoeren alvorens het commando ```cordova plugin add cordova-universal-links-plugin-fix --save``` uit te voeren.
 
 ### Referenties:
 * https://firebase.google.com/docs/auth/web/cordova
@@ -41,8 +41,8 @@
 * *Framework7*.
 
 ### Beschrijving:
-* In deze week zijn wij vooral bezig met *Firestore* op *iOS* en *Framework7*. Tijdens het implementeren van *Firestore* zijn we tegen een probleem gebotst. Als ons *Framework7* project de plug-in *```WKWebView```* gebruikt, dan krijgen we in de werkende app een fout van *Firestore*.
-Wij hebben hiervoor een oplossing gevonden, namelijk de *```WKWebView```* plug-in verwijderen en de *```UIWebView```* plug-in in de plaats hiervan gebruiken.
+* In deze week zijn wij vooral bezig met *Firestore* op *iOS* en *Framework7*. Tijdens het implementeren van *Firestore* zijn we tegen een probleem gebotst. Als ons *Framework7* project de plug-in *```WKWebView```* gebruikt, dan krijgen we tijdens het uitvoeren van de app een fout van *Firestore*.
+Wij hebben hiervoor een oplossing gevonden, namelijk de *```WKWebView```* plug-in vervangen door de *```UIWebView```* plug-in.
 
 ![](probleem1.png)
 
@@ -53,7 +53,7 @@ Wij hebben hiervoor een oplossing gevonden, namelijk de *```WKWebView```* plug-i
 * *Firebase*
 
 ### Beschrijving:
-* We werken verder aan onze app. Alle gegevens van de klant en de medewerker worden opgeslagen in *Firebase* en deze worden vervolgens opgeladen in onze app. Nu kunnen we hotels toevoegen, een reservatie maken, en foto's en namen van medewerkers en klanten opladen op de profielpagina.
+* We werken verder aan onze app. Alle gegevens van de klant en de medewerker worden opgeslagen in *Firebase* en deze worden vervolgens opgeladen in onze app. Nu kunnen we hotels toevoegen, een reservatie maken, en foto's en namen van medewerkers en klanten toevoegen aan hun profielpagina's.
 
 ---
 
@@ -62,7 +62,7 @@ Wij hebben hiervoor een oplossing gevonden, namelijk de *```WKWebView```* plug-i
 * Het implementeren van de chat.
 
 ### Beschrijving:
-* Onze chat moet een connectie maken tussen de medewerker en de klant. De klant kan met al zijn vragen en problemen terecht bij onze medewerker.
+* Onze chat moet een verbinding leggen tussen de medewerker en de klant. De klant kan d.m.v. deze chat bij onze medewerker terecht met al zijn vragen en problemen.
 
 ---
 
@@ -71,10 +71,10 @@ Wij hebben hiervoor een oplossing gevonden, namelijk de *```WKWebView```* plug-i
 * Probleem *```UIWebView```*.
 
 ### Probleem:
-* Vanaf april weigert onze app om *```UIWebView```* te gebruiken. Dit blijkt echter een probleem met *Firestore* in combinatie met *Framework7* te zijn: deze gebruiken namelijk *```WKWebView```*.
+* Vanaf april weigert onze app om *```UIWebView```* te gebruiken. Dit probleem ligt echter bij *Firestore* en *Framework7*: deze gebruiken namelijk de *```WKWebView```* plug-in.
 
 ### Oplossing:
-* We zijn ten rade geweest op het forum van *Framework7*. Bij het configuren van *Firestore* moeten we een paar "settings" toevoegen: 
+* We zijn ten rade geweest bij het forum van *Framework7*. Bij het configuren van *Firestore* moeten we een paar "settings" toevoegen: 
 
 ```javascript
 firebase.firestore().settings({ experimentalForceLongPolling: true });
@@ -139,9 +139,9 @@ firebase.firestore().settings({ experimentalForceLongPolling: true });
 >
 > App Store Review
 
-* Tot op heden staat onze app nog altijd niet in de *App Store*. Eerder haalde *Apple* al aan dat we gebruik maakten van verouderde API’s. We moesten *```UIWebView```* niet meer gebruiken en moesten dit vervangen met *```WKWebView```*. Dit deden we ook.
+* Tot op heden staat onze app nog altijd niet in de *App Store*. Eerder haalde *Apple* al aan dat we gebruik maakten van verouderde API’s. We moesten de *```UIWebView```* plug-in niet meer gebruiken en moesten deze vervangen door de *```WKWebView```* plug-in. Dit deden we ook.
 
-* Nu klaagt *Apple* dat onze app teveel lijkt op andere apps. We kunnen al raden welke dit zullen zijn: *[Hotel Trivago](https://apps.apple.com/be/app/trivago-compare-hotel-prices/id376888389)* en *[Hotel Tonight: Hotelkortingen](https://apps.apple.com/nl/app/hotel-tonight-hotelkortingen/id407690035)*. In tegenstelling tot deze apps raden wij zelf geen hotels aan tegen kortingen, maar bieden wij louter nachtreceptie aan voor hotels die onze diensten ondersteunen.
+* Nu klaagt *Apple* dat onze app teveel lijkt op andere apps. We kunnen al raden welke dit zullen zijn: *[Hotel Trivago](https://apps.apple.com/be/app/trivago-compare-hotel-prices/id376888389)* en *[Hotel Tonight: Hotelkortingen](https://apps.apple.com/nl/app/hotel-tonight-hotelkortingen/id407690035)*. In tegenstelling tot wat *Apple* denkt richten wij ons niet op vakantiegangers, maar op hoteleigenaars. We bieden zelfs geen hotels tegen kortingen aan, hoewel we wel kunnen vatten hoe de verwarring is ontstaan.
 
 ### Oplossing:
-* Wij hebben hier nog geen oplossing voor.
+* Qua oplossing hiervoor zitten we een beetje vast. We weten met honderd percent zekerheid te zeggen dat de mail een geautomatiseerde mail is. We denken ook dat het moeilijk kan worden om Apple persoonlijk te contacteren om de situatie uit te leggen. We laten het dus momenteel zo.
