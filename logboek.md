@@ -14,8 +14,11 @@
 ### Topics:
 * Implementatie *Google* login.
 
-### Beschrijving:
-* Tijdens het werken met *Cordova* stoten we op een probleem: Als wij de *Google* login service beginnen te implementeren, merken we op dat we niet kunnen inloggen via *Google*. Er was een probleem met *```universal-link```*. Op de documentatie staat niet dat we eerst het commando ```cordova plugin add cordova-universal-links-plugin``` moeten uitvoeren alvorens het commando ```cordova plugin add cordova-universal-links-plugin-fix --save``` uit te voeren.
+### Probleem:
+Als wij de *Google* login service beginnen te implementeren, merken we op dat we niet kunnen inloggen via *Google*. Er was een probleem met *```universal-link```*.
+
+### Oplossing:
+Op de documentatie staat niet dat we eerst het commando ```cordova plugin add cordova-universal-links-plugin``` moeten uitvoeren alvorens het commando ```cordova plugin add cordova-universal-links-plugin-fix --save``` uit te voeren.
 
 ### Referenties:
 * https://firebase.google.com/docs/auth/web/cordova
@@ -41,8 +44,13 @@
 * *Framework7*.
 
 ### Beschrijving:
-* In deze week zijn wij vooral bezig met *Firestore* op *iOS* en *Framework7*. Tijdens het implementeren van *Firestore* zijn we tegen een probleem gebotst. Als ons *Framework7* project de plug-in *```WKWebView```* gebruikt, dan krijgen we tijdens het uitvoeren van de app een fout van *Firestore*.
-Wij hebben hiervoor een oplossing gevonden, namelijk de *```WKWebView```* plug-in vervangen door de *```UIWebView```* plug-in.
+* In deze week zijn wij vooral bezig met *Firestore* op *iOS* en *Framework7*. Tijdens het implementeren van *Firestore* zijn we tegen een probleem gebotst.
+
+### Probleem:
+Als ons *Framework7* project de plug-in *```WKWebView```* gebruikt, dan krijgen we tijdens het uitvoeren van de app een fout van *Firestore*.
+
+### Oplossing:
+De *```WKWebView```* plug-in vervangen door de *```UIWebView```* plug-in.
 
 ![](probleem1.png)
 
@@ -74,7 +82,7 @@ Wij hebben hiervoor een oplossing gevonden, namelijk de *```WKWebView```* plug-i
 * Vanaf april weigert onze app om *```UIWebView```* te gebruiken. Dit probleem ligt echter bij *Firestore* en *Framework7*: deze gebruiken namelijk de *```WKWebView```* plug-in.
 
 ### Oplossing:
-* We zijn ten rade geweest bij het forum van *Framework7*. Bij het configuren van *Firestore* moeten we een paar "settings" toevoegen: 
+* We zijn ten rade gegaan bij het forum van *Framework7*. Bij het configureren van *Firestore* moeten we een paar "settings" toevoegen: 
 
 ```javascript
 firebase.firestore().settings({ experimentalForceLongPolling: true });
