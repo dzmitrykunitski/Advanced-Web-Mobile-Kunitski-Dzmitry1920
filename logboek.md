@@ -152,4 +152,4 @@ firebase.firestore().settings({ experimentalForceLongPolling: true });
 * Nu klaagt *Apple* dat onze app teveel lijkt op andere apps. We kunnen al raden welke dit zullen zijn: *[Hotel Trivago](https://apps.apple.com/be/app/trivago-compare-hotel-prices/id376888389)* en *[Hotel Tonight: Hotelkortingen](https://apps.apple.com/nl/app/hotel-tonight-hotelkortingen/id407690035)*. In tegenstelling tot wat *Apple* denkt richten wij ons niet op vakantiegangers, maar op hoteleigenaars. We bieden zelfs geen hotels tegen kortingen aan, hoewel we wel kunnen vatten hoe de verwarring is ontstaan.
 
 ### Oplossing:
-* Qua oplossing hiervoor zitten we een beetje vast. We weten met honderd percent zekerheid te zeggen dat de mail een geautomatiseerde mail is. We denken ook dat het moeilijk kan worden om Apple persoonlijk te contacteren om de situatie uit te leggen. We laten het dus momenteel zo.
+* Qua oplossing hiervoor zitten we een beetje vast. We weten met honderd percent zekerheid te zeggen dat de mail een geautomatiseerde mail is. We denken ook dat het moeilijk kan worden om *Apple* persoonlijk te contacteren om de situatie uit te leggen. We laten het dus momenteel zo.
