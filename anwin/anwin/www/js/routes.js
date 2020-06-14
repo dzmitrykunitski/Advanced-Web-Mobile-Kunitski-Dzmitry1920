@@ -1,22 +1,20 @@
-
-var routes = [
+var routes =
+[
   {
     path: '/',
-    url: './index.html',
+    url: './index.html'
   },
   {
     path: '/about/',
-    url: './pages/about.html',
+    url: './pages/about.html'
   },
   {
     path: '/form/',
-    url: './pages/form.html',
+    url: './pages/form.html'
   },
-
-
   {
     path: '/dynamic-route/blog/:blogId/post/:postId/',
-    componentUrl: './pages/dynamic-route.html',
+    componentUrl: './pages/dynamic-route.html'
   },
   {
     path: '/request-and-load/user/:userId/',
@@ -39,16 +37,16 @@ var routes = [
         var user = {
           firstName: 'Vladimir',
           lastName: 'Kharlampidi',
-          about: 'Hello, i am creator of Framework7! Hope you like it!',
+          about: 'Hello, I am the creator of Framework7! Hope you like it!',
           links: [
             {
               title: 'Framework7 Website',
-              url: 'http://framework7.io',
+              url: 'http://framework7.io'
             },
             {
               title: 'Framework7 Forum',
-              url: 'http://forum.framework7.io',
-            },
+              url: 'http://forum.framework7.io'
+            }
           ]
         };
         // Hide Preloader
@@ -57,20 +55,20 @@ var routes = [
         // Resolve route to load page
         resolve(
           {
-            componentUrl: './pages/request-and-load.html',
+            componentUrl: './pages/request-and-load.html'
           },
           {
             context: {
-              user: user,
+              user: user
             }
           }
         );
       }, 1000);
-    },
+    }
   },
   // Default route (404 page). MUST BE THE LAST
   {
     path: '(.*)',
-    url: './pages/404.html',
-  },
+    url: './pages/404.html'
+  }
 ];
