@@ -1,127 +1,78 @@
 .fa-check-circle {
-  color: greenyellow;
+    color: greenyellow;
 }
 
 .fa-exclamation-circle {
-  color: red;
+    color: red;
 }
 
 .fab input[type="file"] {
-  opacity: 0;
+
+    opacity: 0;
+
+}
+#fotoKlant{
+    display: flex;
+    justify-content: center;
 }
 
-.flexible-container {
-  display: flex;
-  justify-content: center;
+.fotoContanier {
+    display: flex;
+    justify-content: center;
+}
+#trest{
+  
 }
 
-/* #region demo-popup */
+#content {
+    display: flex;
+    justify-content: center;
+}
+
 .demo-popup-swipe-handler {
-  --f7-popup-border-radius: 15px 15px 0 0;
-  --f7-popup-tablet-border-radius: 15px;
-  --f7-block-strong-border-color: transparent;
-  height: calc(100% - var(--f7-navbar-height) - var(--f7-safe-area-top));
-  top: calc(var(--f7-navbar-height) + var(--f7-safe-area-top))
-}
+    --f7-popup-border-radius: 15px 15px 0 0;
+    --f7-popup-tablet-border-radius: 15px;
+    --f7-block-strong-border-color: transparent;
+    height: calc(100% - var(--f7-navbar-height) - var(--f7-safe-area-top));
+    top: calc(var(--f7-navbar-height) + var(--f7-safe-area-top))
+  }
+  .demo-popup-swipe-handler .swipe-handler {
+    background: var(--f7-page-bg-color);
+  }
+  .demo-popup-swipe-handler .page-content {
+    padding-top: 16px;
+  }
 
-.demo-popup-swipe-handler .swipe-handler {
-  background: var(--f7-page-bg-color);
-}
-
-.demo-popup-swipe-handler .page-content {
-  padding-top: 16px;
-}
-/* #endregion demo-popup */
-
-/* #region demo-sheet */
-.demo-sheet-swipe-to-close,
-.demo-sheet-swipe-to-step,.my-sheet-swipe-to-close1 {
-  --f7-sheet-border-color: transparent;
-  border-radius: 15px 15px 0 0;
-  overflow: hidden;
-}
-
-.demo-sheet-swipe-to-close .swipe-handler,
-.demo-sheet-swipe-to-step .swipe-handler,
-.my-sheet-swipe-to-close1 .swipe-handler {
-  background: none;
-}
-/* #endregion demo-sheet */
-
-/* #region swipe-handler */
-.swipe-handler {
-  height: 16px;
-  position: absolute;
-  left: 0;
-  width: 100%;
-  top: 0;
-  background: #fff;
-  cursor: pointer;
-  z-index: 10;
-}
-
-.swipe-handler:after {
-  content: '';
-  width: 36px;
-  height: 6px;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  margin-left: -18px;
-  margin-top: -3px;
-  border-radius: 3px;
-  background: #666;
-}
-/* #endregion swipe-handler */
-
-/* #region Separation of HTML and CSS */
-/*
-These styles were added to aid the separation of CSS and HTML.
-*/
-
-/* For bolder text */
-.fw-bolder {
-  font-weight: bolder;
-}
-
-/* Class for applying display: none to an element */
-.d-none {
-  display: none;
-}
-
-/* Class for applying height: auto to an element */
-.h-auto {
-  height: auto;
-}
-
-/* Class for changing sheet bg color to white */
-.-bg-white {
-  --f7-sheet-bg-color: #fff;
-}
-
-/* Big media img */
-.media-img-big {
-  width: 170px;
-  height: 170px;
-  border-radius: 50%;
-}
-
-/* Small media img */
-.media-img-small {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-}
-
-/* README: Wrongly named class: should be .fs-big
-Applies a big font-size to the text on which it's used
-*/
-.fs-small {
-  font-size: 50px;
-}
-
-/* Applies the smallest font-size available to the text on which it's used */
-.fs-smallest {
-  font-size: 2em;
-}
-/* #endregion Separation of HTML and CSS */
+  
+  .demo-sheet-swipe-to-close,
+  .demo-sheet-swipe-to-step,.my-sheet-swipe-to-close1 {
+    --f7-sheet-border-color: transparent;
+    border-radius: 15px 15px 0 0;
+    overflow: hidden;
+  }
+  .demo-sheet-swipe-to-close .swipe-handler,
+  .demo-sheet-swipe-to-step .swipe-handler, .my-sheet-swipe-to-close1 .swipe-handler{
+    background: none;
+  }
+  .swipe-handler {
+    height: 16px;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    top: 0;
+    background: #fff;
+    cursor: pointer;
+    z-index: 10;
+  }
+  .swipe-handler:after {
+    content: '';
+    width: 36px;
+    height: 6px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -18px;
+    margin-top: -3px;
+    border-radius: 3px;
+    background: #666;
+  }

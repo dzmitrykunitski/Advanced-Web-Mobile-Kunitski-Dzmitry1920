@@ -1,4 +1,4 @@
-/* #region Material Icons Font (for MD theme) */
+/* Material Icons Font (for MD theme) */
 @font-face {
   font-family: 'Material Icons';
   font-style: normal;
@@ -10,7 +10,6 @@
        url(../fonts/MaterialIcons-Regular.woff) format('woff'),
        url(../fonts/MaterialIcons-Regular.ttf) format('truetype');
 }
-
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;
@@ -28,9 +27,8 @@
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: 'liga';
 }
-/* #endregion Material Icons Font (for MD theme) */
 
-/* #region Framework7 Icons Font (for iOS theme) */
+/* Framework7 Icons Font (for iOS theme) */
 @font-face {
   font-family: 'Framework7 Icons';
   font-style: normal;
@@ -61,4 +59,3 @@
   font-feature-settings: "liga";
   text-align: center;
 }
-/* #endregion Framework7 Icons Font (for iOS theme) */
