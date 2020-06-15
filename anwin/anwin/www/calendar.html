@@ -16,83 +16,10 @@
       <div class="block block-strong medium-inset">
         <p>Via onze kalender kan je kiezen wanneer een van onze night auditor bij U kan werken. </p>
       </div>
-      <!-- <form class="list" id="my-form">
-        <ul>
-          <li>
-            <a class="item-link smart-select smart-select-init">
-             <select id="optieHotel" name="fruits">
 
-
-              </select>
-              
-              <div class="item-content">
-                <div class="item-inner">
-                  <div class="item-title">Hotel</div>
-                </div>
-              </div>
-            </a>
-           
-          </li>
-          <li>
-           
-            <a class="item-link smart-select smart-select-init">
-              <select id="optieMedewerker" name="fruits">
-
-
-              </select>
-              <div class="item-content">
-                <div class="item-inner">
-                  <div class="item-title">Medewerker</div>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <div class="item-content item-input">
-              <div class="item-inner">
-                <div class="item-title item-label" style="font-weight: bolder;">Selecteer startdatum</div>
-                <div class="item-input-wrap">
-                  <input type="text" placeholder="Startdatum" readonly="readonly" id="demo-calendar-range_start" />
-                </div>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div class="item-content item-input">
-              <div class="item-inner">
-                <div class="item-title item-label" style="font-weight: bolder;">Selecteer starttijd</div>
-                <div class="item-input-wrap">
-                  <input type="text" placeholder="Date Time" readonly="readonly" id="picker-starttijd"/>
-
-                </div>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div class="item-content item-input">
-              <div class="item-inner">
-                <div class="item-title item-label" style="font-weight: bolder;">Selecteer einddatum</div>
-                <div class="item-input-wrap">
-                  <input type="text" placeholder="Einddatum" readonly="readonly" id="demo-calendar-range_end" />
-                </div>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div class="item-content item-input">
-              <div class="item-inner">
-                <div class="item-title item-label" style="font-weight: bolder;">Selecteer eindtijd</div>
-                <div class="item-input-wrap">
-                  <input type="text" placeholder="Starttijd" readonly="readonly" id="picker-eindtijd"/>
-                </div>
-              </div>
-            </div>
-          </li>
-        </ul>
-      </form>-->
       <div class="list accordion-list accordion-opposite">
         <ul>
-          <li class="accordion-item">
+          <li id="medewerkerLabel" class="accordion-item">
             <a class="item-content item-link" href="#">
               <div class="item-inner">
                 <div class="item-title">Kies onze medewerker</div>
@@ -101,12 +28,12 @@
             <div class="accordion-item-content">
               <div class="list media-list inset">
                 <ul id="optieMedewerker">
-                  
+
                 </ul>
               </div>
             </div>
           </li>
-          <li class="accordion-item">
+          <li id="hotelLabel" style="display: none;" class="accordion-item">
             <a class="item-content item-link" href="#">
               <div class="item-inner">
                 <div class="item-title">Kies je hotel</div>
@@ -115,16 +42,16 @@
             <div class="accordion-item-content">
               <div class="list media-list inset">
                 <ul id="optieHotel">
-                 
-                 
+
+
                 </ul>
               </div>
               <div class="block">
-                <a href="/klantpagina/"  class="col button button-large button-raised button-fill">Hotel toevoegen</a>
+                <a href="/klantpagina/" class="col button button-large button-raised button-fill">Hotel toevoegen</a>
               </div>
             </div>
           </li>
-          <li class="accordion-item">
+          <li id="startDatumLabel" style="display: none;" class="accordion-item">
             <a class="item-content item-link" href="#">
               <div class="item-inner">
                 <div class="item-title">Kies de startdatum</div>
@@ -138,7 +65,8 @@
                       <div class="item-inner">
                         <div class="item-title item-label" style="font-weight: bolder;">Selecteer startdatum</div>
                         <div class="item-input-wrap">
-                          <input type="text" placeholder="Startdatum" readonly="readonly" id="demo-calendar-range_start" />
+                          <input type="text" placeholder="Startdatum" readonly="readonly"
+                            id="demo-calendar-range_start" />
                         </div>
                       </div>
                     </div>
@@ -148,17 +76,17 @@
                       <div class="item-inner">
                         <div class="item-title item-label" style="font-weight: bolder;">Selecteer starttijd</div>
                         <div class="item-input-wrap">
-                          <input type="text" placeholder="Date Time" readonly="readonly" id="picker-starttijd"/>
-        
+                          <input type="text" placeholder="Date Time" readonly="readonly" id="picker-starttijd" />
+
                         </div>
                       </div>
                     </div>
-                  </li>   
+                  </li>
                 </ul>
               </div>
             </div>
           </li>
-          <li class="accordion-item">
+          <li id="eindDatumLabel" style="display: none;" class="accordion-item">
             <a class="item-content item-link" href="#">
               <div class="item-inner">
                 <div class="item-title">Kies de einddatum</div>
@@ -182,23 +110,47 @@
                       <div class="item-inner">
                         <div class="item-title item-label" style="font-weight: bolder;">Selecteer eindtijd</div>
                         <div class="item-input-wrap">
-                          <input type="text" placeholder="Starttijd" readonly="readonly" id="picker-eindtijd"/>
+                          <input type="text" placeholder="Starttijd" readonly="readonly" id="picker-eindtijd" />
                         </div>
                       </div>
                     </div>
                   </li>
                 </ul>
-                
+
               </div>
             </div>
-          </li>       
+          </li>
         </ul>
       </div>
 
-      <div class="list">
+      <div id="btnVerderHotel" class="list">
         <ul>
           <li>
-            <a href="#" id="btnReserveer" class="col button button-large button-raised button-fill">Reserveren</a>
+            <a href="#" class="col button button-large button-raised button-fill">Verder</a>
+          </li>
+        </ul>
+
+      </div>
+      <div id="btnVerderStartdatum" style="display: none;" class="list">
+        <ul>
+          <li>
+            <a href="#" class="col button button-large button-raised button-fill">Verder</a>
+          </li>
+        </ul>
+
+      </div>
+      <div id="btnVerderEinddatum" style="display: none;" class="list">
+        <ul>
+          <li>
+            <a href="#" class="col button button-large button-raised button-fill">Verder</a>
+          </li>
+        </ul>
+
+      </div>
+      <div id="btnReserveer" style="display: none;" class="list">
+        <ul>
+          <li>
+            <a href="#" class="col button button-large button-raised button-fill">Reserveren</a>
           </li>
         </ul>
 
@@ -215,4 +167,3 @@
     </div>
   </div>
 </div>
-

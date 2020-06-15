@@ -2,15 +2,21 @@
     <div class="navbar">
         <div class="navbar-bg"></div>
         <div class="navbar-inner sliding">
-            <div class="left">
-                <a href="#" class="link back">
-                    <i class="icon icon-back"></i>
-                    <span class="if-not-md">Terug</span>
-                </a>
-            </div>
-            <div class="title">Mijn reserveringen</div>
+          <div class="left">
+            <a id="#" href="/lijstMedewerker/" class="link">
+              <i class="icon icon-back"></i>
+              <span class="if-not-md">Terug</span>
+            </a>
+          </div>
+          <div id="navbarNaam" class="title"></div>
+          <div class="right">
+            <a data-sheet=".my-sheet-top" id="navbarFoto" class="link sheet-open icon-only">
+              <i class="icon f7-icons if-not-md">person_fill</i>
+              <i class="icon material-icons md-only">person</i>
+            </a>
+          </div>
         </div>
-    </div>
+      </div>
     <div class="page-content">
         <div class="block block-strong medium-inset">
             <p>Hier kan je je reservaties bekijken</p>
@@ -45,6 +51,19 @@
         </div>
 
 
+    </div>
+    <div class="sheet-modal sheet-modal-top my-sheet-top">
+      <div class="toolbar toolbar-bottom">
+        <div class="toolbar-inner">
+          <div class="left"></div>
+          <div class="right"><a class="link sheet-close" href="#">Sluiten</a></div>
+        </div>
+      </div>
+      <div class="sheet-modal-inner">
+        <div id="sheetMederwerkerGegevens" class="block">
+          
+        </div>
+      </div>
     </div>
 
 

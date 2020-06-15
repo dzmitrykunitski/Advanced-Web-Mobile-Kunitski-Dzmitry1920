@@ -107,14 +107,27 @@ var app = new Framework7({
     },
 
     {
-      // De pagina waarin de medewerker zijn gegevens bijwerken.
-      path: '/medewerkeProfile/',
-      url: 'medewerkeProfile.html',
+      path: '/lijstMedewerker/',
+      url: 'lijstMedewerker.html',
       options: {
         transition: 'f7-flip',
       },
       on: {
         pageInit: function (event, page) {
+          lijstMedewerkers();
+
+        },
+      }
+    },
+    {
+      path: '/lijstVanDeKlantenReserv/',
+      url: 'lijstVanDeKlantenReserv.html',
+      options: {
+        transition: 'f7-flip',
+      },
+      on: {
+        pageInit: function (event, page) {
+          lijstVanDeKlanten();
 
         },
       }
@@ -146,6 +159,10 @@ var app = new Framework7({
         pageInit: function (event, page) {
           loadMessagesMedewerker();
           saveMessageMedewerker();
+          $$('#terugNaarOnzeKlant').on('click', function () {
+            view.router.navigate('/lijstKlanten/', { transition: 'f7-circle' });
+
+          });
 
 
         },
@@ -162,6 +179,11 @@ var app = new Framework7({
         pageInit: function (event, page) {
           loadMessages();
           saveMessage();
+
+          $$('#terugNaarOnzeMedewerker').on('click', function () {
+            view.router.navigate('/onzemedewerker/', { transition: 'f7-circle' });
+
+          });
 
 
 
@@ -202,12 +224,6 @@ var app = new Framework7({
         pageInit: function (event, page) {
           onzeMedewerkerGegevens();
 
-          // De hulpsheet om de klant informatie te zien.
-          app.sheet.create({
-            el: '.my-sheet-swipe-to-close1',
-            swipeToClose: true,
-            backdrop: true,
-          });
 
 
 
@@ -528,7 +544,7 @@ var wachtwoord = "";
 var herhaalWachtwoord = "";
 var displayNaam = "";
 var fotoRef = "";
-var fileNaam = ""
+var fileNaam = "";
 
 
 var notificationRegist = app.notification.create({
@@ -610,7 +626,7 @@ var notificationReservatie = app.notification.create({
   closeTimeout: 1700,
   on: {
     close: function () {
-      view.router.navigate('/reservatiespagina/');
+      view.router.navigate('/lijstMedewerker/');
 
     },
   },
@@ -754,7 +770,7 @@ function getRegistApi() {
       name: user.displayName,
       email: user.email,
       photoUrl: user.photoURL,
-      uid: user.uid
+      uid: user.uid,
     })
       .then(function () {
         console.log("Document successfully written!");
@@ -948,6 +964,30 @@ function TerugNaarIndex() {
 }
 // De reservaties opslaan in Firebase.
 function sendReservatie() {
+  $$('#btnVerderHotel').on('click', function () {
+    $$('#hotelLabel').css('display', 'block');
+    $$('#btnVerderStartdatum').css('display', 'block');
+    $$('#medewerkerLabel').css('display', 'none');
+    $$('#btnVerderHotel').css('display', 'none');
+
+
+  });
+  $$('#btnVerderStartdatum').on('click', function () {
+    $$('#hotelLabel').css('display', 'none');
+    $$('#startDatumLabel').css('display', 'block');
+    $$('#btnVerderStartdatum').css('display', 'none');
+    $$('#btnVerderEinddatum').css('display', 'block');
+
+
+  });
+  $$('#btnVerderEinddatum').on('click', function () {
+    $$('#startDatumLabel').css('display', 'none');
+    $$('#eindDatumLabel').css('display', 'block');
+    $$('#btnVerderEinddatum').css('display', 'none');
+    $$('#btnReserveer').css('display', 'block');
+
+
+  });
 
   $$('#btnReserveer').on('click', function () {
     var uidKlant = sessionStorage.getItem('klant_id');
@@ -959,7 +999,7 @@ function sendReservatie() {
     var uidMedewerker = $$('input[name="medewerker"]:checked').val();
     var hotelNaam = $$('input[name="hotel"]:checked').val();
     firebase.firestore().collection('klant').doc(uidKlant)
-      .collection('reservaties').add({
+      .collection('reservaties').doc(uidMedewerker).collection('reserv').add({
         start_datum: start_datum,
         eind_datum: eind_datum,
         start_tijd: start_tijd,
@@ -1079,8 +1119,8 @@ function getCalender() {
     var datum = [];
 
 
-    firebase.firestore().collection('medewerker').doc(selected_value)
-      .collection('reservaties').get()
+    firebase.firestore().collection('klant').doc(klant_id).collection('reservaties').doc(selected_value)
+      .collection('reserv').get()
       .then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {
           // doc.data() is never undefined for query doc snapshots
@@ -1250,8 +1290,49 @@ function defaultCalendar() {
 }
 // De reservaties voor de klant ophalen.
 function getHistory() {
+  firebase.firestore().collection("medewerker").where("uid", "==", sessionStorage.getItem('mede_id'))
+    .get()
+    .then(function (querySnapshot) {
+
+      let navbardisplayNaam = "";
+      let navbardisplayFoto = "";
+      querySnapshot.forEach(function (doc) {
+        navbardisplayNaam += doc.data().name;
+        navbardisplayFoto += '<img style="border-radius: 50%;" width="42" height="42" src="' + doc.data().photoUrl + '">';
+
+
+      });
+      $$('#navbarNaam').text(navbardisplayNaam);
+      $$('#navbarFoto').html(navbardisplayFoto);
+
+
+    })
+    .catch(function (error) {
+      console.log("Error getting documents: ", error);
+    });
+  
+    $$('.my-sheet-top').on('sheet:opened', function (e) {
+
+      firebase.firestore().collection("medewerker").where("uid", "==", sessionStorage.getItem('mede_id'))
+        .get()
+        .then(function (querySnapshot) {
+          let line = "";
+          querySnapshot.forEach(function (doc) {
+            line += '<div class="block-title block-title-large">' + doc.data().name + '</div><span style="font-size: 22px;"><i class="fas fa-envelope"></i> ' + doc.data().email + '</span><div id="fotoKlant"><img style="width: 120px; height: 120px; border-radius: 50%" src="' + doc.data().photoUrl + '"></div>';
+  
+  
+          });
+          $$('#sheetMederwerkerGegevens').html(line);
+  
+        })
+        .catch(function (error) {
+          console.log("Error getting documents: ", error);
+        });
+  
+  
+    });
   firebase.firestore().collection('klant').doc(sessionStorage.getItem('klant_id'))
-    .collection('reservaties').get()
+    .collection('reservaties').doc(sessionStorage.getItem('mede_id')).collection('reserv').get()
     .then(function (querySnapshot) {
       let line = "";
       querySnapshot.forEach(function (doc) {
@@ -1264,7 +1345,7 @@ function getHistory() {
       $$('.deleted-callback').on('swipeout:deleted', function () {
         var reservatie_id = $$(this).attr('value');
         firebase.firestore().collection('klant').doc(sessionStorage.getItem('klant_id'))
-          .collection('reservaties').doc(reservatie_id).delete().then(function () {
+          .collection('reservaties').doc(sessionStorage.getItem('mede_id')).collection('reserv').doc(reservatie_id).delete().then(function () {
             app.dialog.alert("De reservering is verwijderd!");
           }).catch(function (error) {
             console.error("Error removing document: ", error);
@@ -1283,21 +1364,63 @@ function getHistory() {
 
 // De reservaties voor de medewerker ophalen.
 function getHistoryVoorMedewerker() {
-  firebase.firestore().collection('medewerker').doc(sessionStorage.getItem('id'))
-    .collection('reservaties').get()
+  firebase.firestore().collection("klant").where("uid", "==", sessionStorage.getItem('kl_id'))
+    .get()
+    .then(function (querySnapshot) {
+
+      let navbardisplayNaam = "";
+      let navbardisplayFoto = "";
+      querySnapshot.forEach(function (doc) {
+        navbardisplayNaam += doc.data().name;
+        navbardisplayFoto += '<img style="border-radius: 50%;" width="42" height="42" src="' + doc.data().photoUrl + '">';
+
+
+      });
+      $$('#navbarNaam').text(navbardisplayNaam);
+      $$('#navbarFoto').html(navbardisplayFoto);
+
+
+    })
+    .catch(function (error) {
+      console.log("Error getting documents: ", error);
+    });
+
+    $$('.my-sheet-top').on('sheet:opened', function (e) {
+
+      firebase.firestore().collection("klant").where("uid", "==", sessionStorage.getItem('kl_id'))
+        .get()
+        .then(function (querySnapshot) {
+          let line = "";
+          querySnapshot.forEach(function (doc) {
+            line += '<div class="block-title block-title-large">' + doc.data().name + '</div><span style="font-size: 22px;"><i class="fas fa-envelope"></i> ' + doc.data().email + '</span><div id="fotoKlant"><img style="width: 120px; height: 120px; border-radius: 50%" src="' + doc.data().photoUrl + '"></div>';
+  
+  
+          });
+          $$('#sheetKlantGegevens').html(line);
+  
+        })
+        .catch(function (error) {
+          console.log("Error getting documents: ", error);
+        });
+  
+  
+    });
+  
+  firebase.firestore().collection('klant').doc(sessionStorage.getItem('kl_id'))
+    .collection('reservaties').doc(sessionStorage.getItem('id')).collection('reserv').get()
     .then(function (querySnapshot) {
       let line = "";
       querySnapshot.forEach(function (doc) {
         // doc.data() is never undefined for query doc snapshots
-        line += '<div class="timeline-item"><div class="timeline-item-date">' + doc.data().start_datum + '</div> <div class="timeline-item-divider"></div><div class="timeline-item-content"><div class="list media-list"><ul>' + '<li value="' + doc.id + '" class="swipeout deleted-callback"><div class="swipeout-content"><div class="item-content"><div class="item-inner"><div class="item-title-row"><div class="timeline-item-title">' + doc.data().hotelNaam + '</div></div><div class="timeline-item-title">' + ' ' + '</div><div class="item-subtitle">Start datum: ' + doc.data().start_datum + '</div><div class="item-subtitle">Start tijd: ' + doc.data().start_tijd + '</div><div class="item-subtitle">Eind datum: ' + doc.data().eind_datum + '</div class="item-subtitle">Eind tijd: ' + doc.data().eind_tijd + '<div></div></div></div></div><div class="swipeout-actions-right"><a href="#" class="swipeout-delete" data-confirm="Wil je deze reservatie verwijderen?"class="swipeout-delete swipeout-overswipe">Verwijderen</a></div></li>' + '</ul></div></div></div>';
+        line += '<div class="timeline-item"><div class="timeline-item-date">' + doc.data().start_datum + '</div> <div class="timeline-item-divider"></div><div class="timeline-item-content"><div class="list media-list"><ul>' + '<li value="' + doc.id + '" class="swipeout deleted-callback"><div class="swipeout-content"><div class="item-content"><div class="item-inner"><div class="item-title-row"><div class="timeline-item-title">' + doc.data().hotelNaam + '</div></div><div class="timeline-item-title">' + ' ' + '</div><div class="item-subtitle">Start datum: ' + doc.data().start_datum + '</div><div class="item-subtitle">Start tijd: ' + doc.data().start_tijd + '</div><div class="item-subtitle">Eind datum: ' + doc.data().eind_datum + '</div> <div class="item-subtitle">Eind tijd: ' + doc.data().eind_tijd + '<div></div></div></div></div><div class="swipeout-actions-right"><a href="#" class="swipeout-delete" data-confirm="Wil je deze reservatie verwijderen?"class="swipeout-delete swipeout-overswipe">Verwijderen</a></div></li>' + '</ul></div></div></div>';
 
 
       });
       $$('#reservatieHistoryVoorMedewerker').html(line);
       $$('.deleted-callback').on('swipeout:deleted', function () {
         var reservatie_id = $$(this).attr('value');
-        firebase.firestore().collection('medewerker').doc(sessionStorage.getItem('id'))
-          .collection('reservaties').doc(reservatie_id).delete().then(function () {
+        firebase.firestore().collection('klant').doc(sessionStorage.getItem('kl_id'))
+          .collection('reservaties').doc(sessionStorage.getItem('id')).collection('reserv').doc(reservatie_id).delete().then(function () {
             app.dialog.alert("De reservering is verwijderd!");
           }).catch(function (error) {
             console.error("Error removing document: ", error);
@@ -1311,77 +1434,6 @@ function getHistoryVoorMedewerker() {
     .catch(function (error) {
       console.log("Error getting documents: ", error);
     });
-
-
-  /*firebase.firestore().collection("reservaties").where("medewerker_fr_id", "==", sessionStorage.getItem('id'))
-    .get()
-    .then(function (querySnapshot) {
-      let line = "";
-      querySnapshot.forEach(function (doc) {
-        // doc.data() is never undefined for query doc snapshots
-        line += '<div class="timeline-item"><div class="timeline-item-date">' + doc.data().start_datum + '</div> <div class="timeline-item-divider"></div><div class="timeline-item-content"><div class="list media-list"><ul>' + '<li value="' + doc.id + '" class="swipeout deleted-callback"><div class="swipeout-content"><div class="item-content"><div class="item-inner"><div class="item-title-row"><div class="timeline-item-title">' + doc.data().naamHotel + '</div></div><div class="timeline-item-title">' + ' ' + '</div><div class="item-subtitle">Start datum: ' + doc.data().start_datum + '</div><div class="item-subtitle">Start tijd: ' + doc.data().start_tijd + '</div><div class="item-subtitle">Eind datum: ' + doc.data().eind_datum + '</div class="item-subtitle">Eind tijd: ' + doc.data().eind_tijd + '<div></div></div></div></div><div class="swipeout-actions-right"><a href="#" class="swipeout-delete" data-confirm="Wil je deze reservatie verwijderen?"class="swipeout-delete swipeout-overswipe">Verwijderen</a></div></li>' + '</ul></div></div></div>';
-
-
-      });
-      $$('#reservatieHistoryVoorMedewerker').html(line);
-      $$('.deleted-callback').on('swipeout:deleted', function () {
-        var reservatie_id = $$(this).attr('value');
-        app.dialog.alert(reservatie_id);
-        firebase.firestore().collection("reservaties").doc(reservatie_id).delete().then(function () {
-          app.dialog.alert("De reservering is verwijderd!");
-        }).catch(function (error) {
-          console.error("Error removing document: ", error);
-        });
-
-
-      });
-
-
-    })
-    .catch(function (error) {
-      console.log("Error getting documents: ", error);
-    });*/
-  /*
-    let apiAddress = "https://anwin.be/src/public/historyVoormedewerker";
-    opties.body = JSON.stringify({
-      medewerker_fr_id: sessionStorage.getItem('id'),
-  
-    });
-    fetch(apiAddress, opties)
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (responseData) {
-  
-        var list = responseData;
-  
-        if (list.length > 0) {
-          let line = "";
-          for (var i = 0; i < list.length; i++) {
-            line += '<div class="timeline-item"><div class="timeline-item-date">' + list[i].start_datum_D_M_Y + '</div><div class="timeline-item-divider"></div><div class="timeline-item-content"><div class="list media-list"><ul>' + '<li value="' + list[i].reservatie_id + '" class="swipeout deleted-callback"><div class="swipeout-content"><div class="item-content"><div class="item-inner"><div class="item-title-row"></div><div class="timeline-item-title">' + 'Hotel: ' + list[i].naamHotel + '</div><div class="timeline-item-subtitle">' + list[i].start_datum + '</div><div class="timeline-item-subtitle">' + list[i].eind_datum + '</div></div></div></div><div class="swipeout-actions-right"><a href="#" class="swipeout-delete" data-confirm="Wil je deze reservatie verwijderen?"class="swipeout-delete swipeout-overswipe">Verwijderen</a></div></li>' + '</ul></div></div></div>';
-  
-          }
-          $$('#reservatieHistoryVoorMedewerker').html(line);
-          $$('.deleted-callback').on('swipeout:deleted', function () {
-            var reservatie_id = $$(this).attr('value');
-            opties.body = JSON.stringify({
-              reservatie_id: reservatie_id,
-  
-            });
-            let apiAddress = "https://anwin.be/src/public/deleteReservatie";
-            fetch(apiAddress, opties)
-              .then(function (response) {
-                return response.text();
-              })
-              .then(function (responseData) {
-                app.dialog.alert(responseData);
-  
-              })
-  
-          });
-  
-        }
-      })*/
 
 
 }
@@ -1562,35 +1614,16 @@ function onzeMedewerkerGegevens() {
 
   firebase.firestore().collection("medewerker").get().then(function (querySnapshot) {
     querySnapshot.forEach(function (doc) {
-      line += '<li class="medeList"  value="' + doc.id + '"><a href="#" data-sheet=".my-sheet-swipe-to-close1" class="item-link item-content sheet-open"><div class="item-media"><img src="' + doc.data().photoUrl + '" width="80" height="80"/></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' + doc.data().name + '</div></div><div class="item-subtitle"></div></div></a></li>';
-      //line += '<li class="accordion-item"><a href="#" class="item-content item-link list-button"><div class="item-media"> <img src="' + doc.data().photoUrl + '"style="width: 100px; height: 100px; border-radius: 50%"></div><div class="item-inner"><div class="item-title">' + doc.data().name + '</div></div></a><div class="accordion-item-content">Some info</div></li>';
+      // line += '<li class="medeList"  value="' + doc.id + '"><a href="#" data-sheet=".my-sheet-swipe-to-close1" class="item-link item-content sheet-open"><div class="item-media"><img src="' + doc.data().photoUrl + '" width="80" height="80"/></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' + doc.data().name + '</div></div><div class="item-subtitle"></div></div></a></li>';
+      line += '<li class="medeList"  value="' + doc.id + '"><a href="#" class="item-link item-content"><div class="item-media"><img src="' + doc.data().photoUrl + '" width="80" height="80"/></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' + doc.data().name + '</div></div><div class="item-subtitle"></div></div></a></li>';
+
     });
     $$('#medewerkersGegevens').html(line);
 
     $$('.medeList').on('click', function () {
       mede_id = $$(this).attr('value');
       sessionStorage.setItem('medewerker_id', mede_id);
-
-    });
-    $$('.my-sheet-swipe-to-close1').on('sheet:opened', function (e) {
-
-      firebase.firestore().collection("medewerker").where("uid", "==", mede_id)
-        .get()
-        .then(function (querySnapshot) {
-          let line = "";
-          querySnapshot.forEach(function (doc) {
-            line += '<div class="block-title block-title-large">' + doc.data().name + '</div><div id="fotoKlant"><img style="width: 120px; height: 120px; border-radius: 50%" src="' + doc.data().photoUrl + '"></div>';
-
-
-          });
-          $$('#popupMedewerkerGegevens').html(line);
-          $$('#popupMedewerkerGegevens').append('<div class="fab fab-right-bottom fab-morph" data-morph-to=".toolbar.fab-morph-target"><a href="/chat/" class="popup-open"><span style="font-size: 50px;"><i class="fab fa-facebook-messenger"></i></span></a></div>');
-
-        })
-        .catch(function (error) {
-          console.log("Error getting documents: ", error);
-        });
-
+      view.router.navigate('/chat/', { transition: 'f7-circle' });
 
     });
 
@@ -1598,7 +1631,52 @@ function onzeMedewerkerGegevens() {
   });
 
 }
+function lijstMedewerkers() {
+  let line = "";
+  var mede_id = "";
 
+  firebase.firestore().collection("medewerker").get().then(function (querySnapshot) {
+    querySnapshot.forEach(function (doc) {
+      // line += '<li class="medeList"  value="' + doc.id + '"><a href="#" data-sheet=".my-sheet-swipe-to-close1" class="item-link item-content sheet-open"><div class="item-media"><img src="' + doc.data().photoUrl + '" width="80" height="80"/></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' + doc.data().name + '</div></div><div class="item-subtitle"></div></div></a></li>';
+      line += '<li class="medeList"  value="' + doc.id + '"><a href="#" class="item-link item-content"><div class="item-media"><img src="' + doc.data().photoUrl + '" width="80" height="80"/></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' + doc.data().name + '</div></div><div class="item-subtitle"></div></div></a></li>';
+
+    });
+    $$('#lijstVanMedewerkers').html(line);
+
+    $$('.medeList').on('click', function () {
+      mede_id = $$(this).attr('value');
+      sessionStorage.setItem('mede_id', mede_id);
+      view.router.navigate('/reservatiespagina/', { transition: 'f7-circle' });
+
+    });
+
+
+  });
+
+}
+function lijstVanDeKlanten() {
+  let line = "";
+  var kl_id = "";
+
+  firebase.firestore().collection("klant").get().then(function (querySnapshot) {
+    querySnapshot.forEach(function (doc) {
+      // line += '<li class="medeList"  value="' + doc.id + '"><a href="#" data-sheet=".my-sheet-swipe-to-close1" class="item-link item-content sheet-open"><div class="item-media"><img src="' + doc.data().photoUrl + '" width="80" height="80"/></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' + doc.data().name + '</div></div><div class="item-subtitle"></div></div></a></li>';
+      line += '<li class="klList"  value="' + doc.id + '"><a href="#" class="item-link item-content"><div class="item-media"><img src="' + doc.data().photoUrl + '" width="80" height="80"/></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' + doc.data().name + '</div></div><div class="item-subtitle"></div></div></a></li>';
+
+    });
+    $$('#lijstVanDeKlanten').html(line);
+
+    $$('.klList').on('click', function () {
+      kl_id = $$(this).attr('value');
+      sessionStorage.setItem('kl_id', kl_id);
+      view.router.navigate('/geschiedenisvoormedewerker/', { transition: 'f7-circle' });
+
+    });
+
+
+  });
+
+}
 
 
 // functies om van een ingelogde gebruiker gegevens te krijgen.
@@ -1617,7 +1695,7 @@ function saveMessage() {
   $$('#sendMessageButton').on('click', function () {
     var uidKlant = getUserUid();
     var naamKlant = getUserName();
-    var photoKlant = getUserPhoto();
+    //var photoKlant = getUserPhoto();
 
     var uidMedewerker = sessionStorage.getItem('medewerker_id');
 
@@ -1629,7 +1707,7 @@ function saveMessage() {
       uidUser: uidKlant,
       text: messageText,
       naamKlant: naamKlant,
-      photoKlant: photoKlant,
+      //photoKlant: photoKlant,
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }).then(function () {
       document.getElementById('textMessage').value = '';
@@ -1643,7 +1721,7 @@ function saveMessage() {
       uidUser: uidKlant,
       text: messageText,
       naamKlant: naamKlant,
-      photoKlant: photoKlant,
+      // photoKlant: photoKlant,
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }).then(function () {
 
@@ -1682,6 +1760,27 @@ function loadMessages() {
     .catch(function (error) {
       console.log("Error getting documents: ", error);
     });
+  // Gegevens van de medewerker opladen.
+  $$('.my-sheet-top').on('sheet:opened', function (e) {
+
+    firebase.firestore().collection("medewerker").where("uid", "==", uidMedewerker)
+      .get()
+      .then(function (querySnapshot) {
+        let line = "";
+        querySnapshot.forEach(function (doc) {
+          line += '<div class="block-title block-title-large">' + doc.data().name + '</div><span style="font-size: 22px;"><i class="fas fa-envelope"></i> ' + doc.data().email + '</span><div id="fotoKlant"><img style="width: 120px; height: 120px; border-radius: 50%" src="' + doc.data().photoUrl + '"></div>';
+
+
+        });
+        $$('#sheetMederwerkerGegevens').html(line);
+
+      })
+      .catch(function (error) {
+        console.log("Error getting documents: ", error);
+      });
+
+
+  });
 
   var messageRef = firebase.firestore().collection('klant').doc(uidKlant)
     .collection('messages').doc(uidMedewerker);
@@ -1698,11 +1797,11 @@ function loadMessages() {
 
         if (message.uidUser == uidKlant) {
 
-          line += '<div class="message message-sent"><img style="border-radius: 50%;" width="20" height="20" src="' + message.photoKlant + '"><div class="message-content"><div class="message-bubble"><div class="message-text">' + message.text + '</div></div></div></div>';
+          line += '<div class="message message-sent"><div class="message-content"><div class="message-bubble"><div class="message-text">' + message.text + '</div></div></div></div>';
 
         }
         else if (message.uidUser == uidMedewerker) {
-          line += '<div class="message message-received"><img style="border-radius: 50%;" width="20" height="20" src="' + message.photoMedewerker + '"><div class="message-content"><div class="message-bubble"><div class="message-text">' + message.text + '</div></div></div></div>';
+          line += '<div class="message message-received"><div class="message-content"><div class="message-bubble"><div class="message-text">' + message.text + '</div></div></div></div>';
 
 
         }
@@ -1719,7 +1818,9 @@ function lijstenVanDeKlanten() {
   firebase.firestore().collection("klant").get().then(function (querySnapshot) {
     querySnapshot.forEach(function (doc) {
       //line += '<li class="klantList"  value="' + doc.id + '"><a href="#" class="item-link item-content" data-sheet=".my-sheet-swipe-to-close2"><div class="item-media"><img src="' + doc.data().photoUrl + '" width="80" height="80"/></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' + doc.data().name + '</div></div><div class="item-subtitle">Meer ...</div></div></a></li>';
-      line += '<li class="klantList"  value="' + doc.id + '"><a href="#" data-sheet=".my-sheet-swipe-to-close2" class="item-link item-content sheet-open"><div class="item-media"><img src="' + doc.data().photoUrl + '" width="80" height="80"/></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' + doc.data().name + '</div></div><div class="item-subtitle"></div></div></a></li>';
+      //line += '<li class="klantList"  value="' + doc.id + '"><a href="#" data-sheet=".my-sheet-swipe-to-close2" class="item-link item-content sheet-open"><div class="item-media"><img src="' + doc.data().photoUrl + '" width="80" height="80"/></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' + doc.data().name + '</div></div><div class="item-subtitle"></div></div></a></li>';
+      line += '<li class="klantList"  value="' + doc.id + '"><a href="#" class="item-link item-content"><div class="item-media"><img src="' + doc.data().photoUrl + '" width="80" height="80"/></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' + doc.data().name + '</div></div><div class="item-subtitle"></div></div></a></li>';
+
 
     });
     $$('#lijstKlanten').html(line);
@@ -1727,6 +1828,8 @@ function lijstenVanDeKlanten() {
     $$('.klantList').on('click', function () {
       kl_id = $$(this).attr('value');
       sessionStorage.setItem('kl_id', kl_id);
+      view.router.navigate('/berichtenVoorMedewerker/', { transition: 'f7-circle' });
+
 
     });
     $$('.my-sheet-swipe-to-close2').on('sheet:opened', function (e) {
@@ -1761,7 +1864,7 @@ function saveMessageMedewerker() {
     var uidMedewerker = getUserUid();
     var uidKlant = sessionStorage.getItem('kl_id');
     var naamMedewerker = getUserName();
-    var photoMedewerker = getUserPhoto();
+    // var photoMedewerker = getUserPhoto();
 
     var messageText = document.getElementById('textMessage').value;
 
@@ -1771,7 +1874,7 @@ function saveMessageMedewerker() {
       uidUser: uidMedewerker,
       text: messageText,
       naamMedewerker: naamMedewerker,
-      photoMedewerker: photoMedewerker,
+      // photoMedewerker: photoMedewerker,
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }).then(function () {
       document.getElementById('textMessage').value = '';
@@ -1785,7 +1888,7 @@ function saveMessageMedewerker() {
       uidUser: uidMedewerker,
       text: messageText,
       naamMedewerker: naamMedewerker,
-      photoMedewerker: photoMedewerker,
+      //photoMedewerker: photoMedewerker,
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }).then(function () {
 
@@ -1823,6 +1926,27 @@ function loadMessagesMedewerker() {
     .catch(function (error) {
       console.log("Error getting documents: ", error);
     });
+    $$('.my-sheet-top').on('sheet:opened', function (e) {
+
+      firebase.firestore().collection("klant").where("uid", "==", uidKlant)
+        .get()
+        .then(function (querySnapshot) {
+          let line = "";
+          querySnapshot.forEach(function (doc) {
+            line += '<div class="block-title block-title-large">' + doc.data().name + '</div><span style="font-size: 22px;"><i class="fas fa-envelope"></i> ' + doc.data().email + '</span><div id="fotoKlant"><img style="width: 120px; height: 120px; border-radius: 50%" src="' + doc.data().photoUrl + '"></div>';
+  
+  
+          });
+          $$('#sheetKlantGegevens').html(line);
+  
+        })
+        .catch(function (error) {
+          console.log("Error getting documents: ", error);
+        });
+  
+  
+    });
+
   var messageRef = firebase.firestore().collection('medewerker').doc(uidMedewerker)
     .collection('messages').doc(uidKlant);
   /*messageRef.collection('ms').orderBy('timestamp').get().then(function (querySnapshot) {
@@ -1857,11 +1981,11 @@ function loadMessagesMedewerker() {
         var message = change.doc.data();
 
         if (message.uidUser == uidMedewerker) {
-          line += '<div class="message message-sent"><img style="border-radius: 50%;" width="20" height="20" src="' + message.photoMedewerker + '"><div class="message-content"><div class="message-header">' + message.naamMedewerker + '</div><div class="message-bubble"><div class="message-text">' + message.text + '</div></div></div></div>';
+          line += '<div class="message message-sent"><div class="message-content"><div class="message-bubble"><div class="message-text">' + message.text + '</div></div></div></div>';
 
         }
         else if (message.uidUser == uidKlant) {
-          line += '<div class="message message-received"><img style="border-radius: 50%;" width="20" height="20" src="' + message.photoKlant + '"><div class="message-content"><div class="message-header">' + message.naamKlant + '</div><div class="message-bubble"><div class="message-text">' + message.text + '</div></div></div></div>';
+          line += '<div class="message message-received"><div class="message-content"><div class="message-bubble"><div class="message-text">' + message.text + '</div></div></div></div>';
 
 
         }
