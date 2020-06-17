@@ -149,7 +149,8 @@ We hebben onze app naar *Apple* gestuurd voor een app review. Wij kregen van *Ap
 
 Tot op heden staat onze app nog altijd niet in de *App Store*. Eerder haalde *Apple* al aan dat we gebruik maakten van verouderde API’s. We moesten de *```UIWebView```* plug-in niet meer gebruiken en moesten deze vervangen door de *```WKWebView```* plug-in. Dit deden we ook.
 
-Nu klaagt *Apple* dat onze app teveel lijkt op andere apps. We kunnen al raden welke dit zullen zijn: *[Hotel Trivago](https://apps.apple.com/be/app/trivago-compare-hotel-prices/id376888389)* en *[Hotel Tonight: Hotelkortingen](https://apps.apple.com/nl/app/hotel-tonight-hotelkortingen/id407690035)*. In tegenstelling tot wat *Apple* denkt richten wij ons niet op vakantiegangers, maar op hoteleigenaars. We bieden zelfs geen hotels tegen kortingen aan, hoewel we wel kunnen vatten hoe de verwarring is ontstaan.
+*Apple* klaagde ook al dat onze app te veel lijkt op andere apps. We kunnen al raden welke dit zullen zijn: *[Hotel Trivago](https://apps.apple.com/be/app/trivago-compare-hotel-prices/id376888389)* en *[Hotel Tonight: Hotelkortingen](https://apps.apple.com/nl/app/hotel-tonight-hotelkortingen/id407690035)*. In tegenstelling tot wat *Apple* denkt richten wij ons niet op vakantiegangers, maar op hoteleigenaars. We bieden zelfs geen hotels tegen kortingen aan, hoewel we wel kunnen vatten hoe de verwarring is ontstaan. Dit probleem is reeds van de baan.
 
-### Oplossing:
-Qua oplossing hiervoor zitten we een beetje vast. We weten met honderd percent zekerheid te zeggen dat de mail een geautomatiseerde mail is. We denken ook dat het moeilijk kan worden om *Apple* persoonlijk te contacteren om de situatie uit te leggen. We laten het dus momenteel zo.
+![](reviewTakingLongerThanExp.png)
+
+Recent zegt *Apple* dat de review langer duurt dan verwacht. Wij kunnen momenteel niets anders doen dan de situatie nauw op te volgen en het resultaat af te wachten.
