@@ -1,4 +1,12 @@
-# Logboek Advanced Web & Mobile | Dzmitry Kunitski & Sasja Limpens
+# Anwin | Advanced Web & Mobile
+
+Het project **Anwin** stelt hoteleigenaars in staat om onze medewerkers in te huren als Night Auditor/Front Office Manager voor hun hotels.
+Dit project werd gerealiseerd voor het vak **Advanced Web & Mobile** van de richting **Toegepaste Informatica** aan de **Co-hogeschool Odisee** @ **Brussel**.
+**Sasja Limpens** en **Dzmitry Kunitski** realiseerden het.
+
+---
+
+# Logboek
 
 ## Week 1
 ### Topics:
